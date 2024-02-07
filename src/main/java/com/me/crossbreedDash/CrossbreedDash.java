@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 @Mod(CrossbreedDash.MOD_ID)
 public class CrossbreedDash {
     // Define mod id in a common place for everything to reference
-    public static final String MOD_ID = "crossbreed_dash";
+    public static final String MOD_ID = "crossbreeddash";
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
     // Create a Deferred Register to hold Blocks which will all be registered under the "examplemod" namespace
