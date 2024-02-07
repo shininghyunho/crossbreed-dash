@@ -1,5 +1,6 @@
 package com.me.cross;
 
+import com.me.cross.item.ModCreativeModTabs;
 import com.me.cross.item.ModItems;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
@@ -41,6 +42,8 @@ public class Cross {
     public Cross() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
+        // 이벤트 버스에 모드 크리에이티브 탭을 등록합니다.
+        ModCreativeModTabs.register(modEventBus);
         // 이벤트 버스에 모드 아이템을 등록합니다.
         ModItems.register(modEventBus);
 
