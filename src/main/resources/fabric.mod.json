@@ -1,8 +1,8 @@
 {
 	"schemaVersion": 1,
-	"id": "crossbreed-dash",
+	"id": "crossbress-dash",
 	"version": "${version}",
-	"name": "crossbreed-dash",
+	"name": "crossbress-dash",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
 		"Me!"
@@ -12,31 +12,21 @@
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/crossbreed-dash/icon.png",
+	"icon": "assets/crossbress-dash/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.me.Crossbreeddash"
-		],
-		"client": [
-			"com.me.CrossbreeddashClient"
-		],
-		"fabric-datagen": [
-			"com.me.CrossbreeddashDataGenerator"
+			"com.me.Crossbressdash"
 		]
 	},
 	"mixins": [
-		"crossbreed-dash.mixins.json",
-		{
-			"config": "crossbreed-dash.client.mixins.json",
-			"environment": "client"
-		}
+		"crossbress-dash.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.15.6",
-		"minecraft": "~1.20.4",
-		"java": ">=17",
-		"fabric-api": "*"
+		"minecraft": "~1.16.5",
+		"java": ">=16",
+		"fabric": "*"
 	},
 	"suggests": {
 		"another-mod": "*"
