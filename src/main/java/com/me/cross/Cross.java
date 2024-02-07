@@ -1,5 +1,6 @@
 package com.me.cross;
 
+import com.me.cross.item.ModItems;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
@@ -40,6 +41,9 @@ public class Cross {
     public Cross() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
+        // 이벤트 버스에 모드 아이템을 등록합니다.
+        ModItems.register(modEventBus);
+
         modEventBus.addListener(this::commonSetup);
 
         MinecraftForge.EVENT_BUS.register(this);
@@ -51,6 +55,9 @@ public class Cross {
 
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
+        if(event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+            event.accept(ModItems.SAPPHIRE);
+        }
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
