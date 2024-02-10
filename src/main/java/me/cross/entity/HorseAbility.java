@@ -1,12 +1,13 @@
 package me.cross.entity;
 
-import net.minecraft.entity.passive.AbstractHorseEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.nbt.NbtCompound;
+
+import java.util.Random;
+import java.util.UUID;
 
 public class HorseAbility {
-    public AbstractHorseEntity horseEntity;
-    public PlayerEntity playerEntity;
+    public UUID ownerUuid;
+    public UUID horseUuid;
     public int level;
     public float speedMultiplier;
     public float jumpMultiplier;
@@ -14,15 +15,17 @@ public class HorseAbility {
     // 말이 변덕이 있어서 갑자기 멈춤
     public float crazyFactor;
 
-    public HorseAbility(AbstractHorseEntity horseEntity, PlayerEntity playerEntity) {
-        this.horseEntity = horseEntity;
-        this.playerEntity = playerEntity;
+    private static final Random random = new Random();
+
+    public HorseAbility(UUID ownerUuid, UUID horseUuid) {
+        this.ownerUuid = ownerUuid;
+        this.horseUuid = horseUuid;
         // set default value
         level = 1;
-        setLevelOneRandomly(horseEntity.getRandom());
+        setLevelOneRandomly();
     }
 
-    private void setLevelOneRandomly(Random random) {
+    private void setLevelOneRandomly() {
         // 0<speedMultiplier<1
         speedMultiplier = random.nextFloat();
         // 0<jumpMultiplier<1
@@ -42,5 +45,21 @@ public class HorseAbility {
                 ", healthMultiplier=" + healthMultiplier +
                 ", crazyFactor=" + crazyFactor +
                 '}';
+    }
+
+    public void writeToNbt(NbtCompound horseAbilityNbt) {
+        horseAbilityNbt.putInt("Level", level);
+        horseAbilityNbt.putFloat("SpeedMultiplier", speedMultiplier);
+        horseAbilityNbt.putFloat("JumpMultiplier", jumpMultiplier);
+        horseAbilityNbt.putFloat("HealthMultiplier", healthMultiplier);
+        horseAbilityNbt.putFloat("CrazyFactor", crazyFactor);
+    }
+
+    public void readFromNbt(NbtCompound horseAbilityNbt) {
+        level = horseAbilityNbt.getInt("Level");
+        speedMultiplier = horseAbilityNbt.getFloat("SpeedMultiplier");
+        jumpMultiplier = horseAbilityNbt.getFloat("JumpMultiplier");
+        healthMultiplier = horseAbilityNbt.getFloat("HealthMultiplier");
+        crazyFactor = horseAbilityNbt.getFloat("CrazyFactor");
     }
 }
