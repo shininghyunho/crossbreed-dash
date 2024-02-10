@@ -4,7 +4,8 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "HorseMixin",
-    "PlayerMixin"
+    "PlayerMixin",
+    "ServerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
