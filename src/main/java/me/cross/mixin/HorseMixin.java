@@ -3,10 +3,12 @@ package me.cross.mixin;
 import me.cross.Cross;
 import me.cross.entity.HorseAbility;
 import me.cross.entity.HorseOwnerHandler;
+import me.cross.event.HorseBondWithPlayerCallback;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -48,6 +50,11 @@ public abstract class HorseMixin extends Entity {
     // putPlayerOnBack
     @Inject(at = @At("TAIL"), method = "putPlayerOnBack")
     private void putPlayerOnBack(PlayerEntity player, CallbackInfo ci) {
+        ActionResult result = HorseBondWithPlayerCallback.EVENT.invoker().interact(player, (AbstractHorseEntity) (Object) this);
+        if(result != ActionResult.PASS) {
+            ci.cancel();
+        }
+
         if(getWorld().isClient()) {
             AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
 

@@ -1,5 +1,6 @@
 package me.cross;
 
+import me.cross.event.HorseBondWithPlayerCallback;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
@@ -32,6 +33,12 @@ public class Cross implements ModInitializer {
 			if(blockState.isToolRequired() && !player.isSpectator() && player.getMainHandStack().isEmpty()) {
 				LOGGER.info("블록 파괴 시도 이벤트 발생");
 			}
+			return ActionResult.PASS;
+		});
+
+		// HorseBondWithPlayerCallback.EVENT.register
+		HorseBondWithPlayerCallback.EVENT.register((player, horse) -> {
+			LOGGER.info("말과 상호작용 이벤트 발생");
 			return ActionResult.PASS;
 		});
 	}
