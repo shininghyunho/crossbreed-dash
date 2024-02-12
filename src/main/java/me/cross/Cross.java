@@ -1,5 +1,6 @@
 package me.cross;
 
+import me.cross.custom.CustomBlock;
 import me.cross.entity.HorseAbility;
 import me.cross.handler.HorseOwnerHandler;
 import me.cross.custom_event.horse.HorseBondWithPlayerCallback;
@@ -11,6 +12,8 @@ import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.text.Text;
@@ -65,6 +68,9 @@ public class Cross implements ModInitializer {
 			sendStopwatchMessage(time, server);
 		});
 
+	}
+	private void registerBlocks() {
+		Registry.register(Registries.BLOCK, CustomBlock.UNBREAKABLE_DIRT_PATH_NAME, CustomBlock.UNBREAKABLE_DIRT_PATH);
 	}
 
 	private void addAbility(PlayerEntity player, AbstractHorseEntity horse) {

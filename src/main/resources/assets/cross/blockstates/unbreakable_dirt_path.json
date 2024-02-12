@@ -1,0 +1,7 @@
+{
+  "variants" : {
+    "" : {
+      "model" : "cross:block/unbreakable_dirt_path"
+    }
+  }
+}
