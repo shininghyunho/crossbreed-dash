@@ -1,3 +1,4 @@
 {
-  "block.cross.unbreakable_dirt_path" : "Unbreakable Dirt Path"
+  "block.cross.unbreakable_dirt_path" : "Unbreakable Dirt Path",
+  "block.cross.unbreakable_checkpoint" : "Unbreakable Checkpoint"
 }

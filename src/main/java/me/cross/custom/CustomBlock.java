@@ -25,6 +25,9 @@ public class CustomBlock {
     public static final Block UNBREAKABLE_DIRT_PATH_BLOCK = registerBlock("unbreakable_dirt_path",
             new Block(FabricBlockSettings.create().strength(UNBREAKABLE_BLOCK_HARDNESS, UNBREAKABLE_BLOCK_RESISTANCE)),
             ItemGroups.BUILDING_BLOCKS);
+    public static final Block UNBREAKABLE_CHECKPOINT_BLOCK = registerBlock("unbreakable_checkpoint",
+            new Block(FabricBlockSettings.create().strength(UNBREAKABLE_BLOCK_HARDNESS, UNBREAKABLE_BLOCK_RESISTANCE)),
+            ItemGroups.BUILDING_BLOCKS);
 
     public static void registerCustomBlock() {
         Cross.LOGGER.info("Registering custom blocks");
