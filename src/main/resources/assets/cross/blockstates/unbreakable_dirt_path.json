@@ -1,7 +1,5 @@
 {
   "variants" : {
-    "" : {
-      "model" : "cross:block/unbreakable_dirt_path"
-    }
+    "" : { "model" : "cross:block/unbreakable_dirt_path" }
   }
 }

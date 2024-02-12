@@ -1,33 +1,38 @@
 package me.cross;
 
 import me.cross.custom.CustomBlock;
+import me.cross.custom_event.horse.HorseBondWithPlayerCallback;
 import me.cross.entity.HorseAbility;
 import me.cross.handler.HorseOwnerHandler;
-import me.cross.custom_event.horse.HorseBondWithPlayerCallback;
 import me.cross.handler.RacingStopwatch;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Cross implements ModInitializer {
-    public static final Logger LOGGER = LoggerFactory.getLogger("cross");
+	public static final String MOD_ID = "cross";
+	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	private static long prevTime = 0;
 
 	@Override
 	public void onInitialize() {
 		registerEvents();
+		CustomBlock.registerCustomBlock();
 		LOGGER.info("Hello Fabric world!");
 	}
 
@@ -68,9 +73,6 @@ public class Cross implements ModInitializer {
 			sendStopwatchMessage(time, server);
 		});
 
-	}
-	private void registerBlocks() {
-		Registry.register(Registries.BLOCK, CustomBlock.UNBREAKABLE_DIRT_PATH_NAME, CustomBlock.UNBREAKABLE_DIRT_PATH);
 	}
 
 	private void addAbility(PlayerEntity player, AbstractHorseEntity horse) {
