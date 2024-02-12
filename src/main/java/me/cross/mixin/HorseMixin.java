@@ -1,9 +1,8 @@
 package me.cross.mixin;
 
-import me.cross.Cross;
 import me.cross.entity.HorseAbility;
-import me.cross.entity.HorseOwnerHandler;
-import me.cross.event.HorseBondWithPlayerCallback;
+import me.cross.handler.HorseOwnerHandler;
+import me.cross.custom_event.horse.HorseBondWithPlayerCallback;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.AbstractHorseEntity;
@@ -48,29 +47,16 @@ public abstract class HorseMixin extends Entity {
     }
 
     // putPlayerOnBack
-    @Inject(at = @At("TAIL"), method = "putPlayerOnBack")
+    @Inject(at = @At("TAIL"), method = "putPlayerOnBack", cancellable = true)
     private void putPlayerOnBack(PlayerEntity player, CallbackInfo ci) {
-        ActionResult result = HorseBondWithPlayerCallback.EVENT.invoker().interact(player, (AbstractHorseEntity) (Object) this);
-        if(result != ActionResult.PASS) {
-            ci.cancel();
-        }
-
         if(getWorld().isClient()) {
-            AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
-
-            // map 에서 houseAbility 가 있으면 가져오고 없으면 생성
-            if(HorseOwnerHandler.containsHorseAbility(player.getUuid(), horse.getUuid())) {
-                Cross.LOGGER.info("horseAbility is already exist");
-                horseAbility = HorseOwnerHandler.getHorseAbility(player.getUuid(), horse.getUuid());
-
-                if(horseAbility!=null) Cross.LOGGER.info("horseAbility : " + horseAbility);
-            } else {
-                Cross.LOGGER.info("horseAbility is not exist so create new one");
-                horseAbility = new HorseAbility(player.getUuid(), horse.getUuid());
-                HorseOwnerHandler.addHorseAbility(player.getUuid(), horse.getUuid(), horseAbility);
-
-                Cross.LOGGER.info("horseAbility : " + horseAbility);
+            ActionResult result = HorseBondWithPlayerCallback.EVENT.invoker().interact(player, (AbstractHorseEntity) (Object) this);
+            if(result != ActionResult.PASS) {
+                ci.cancel();
             }
+
+            // set horseAbility
+            if(horseAbility==null) horseAbility = HorseOwnerHandler.getHorseAbility(player.getUuid(), getUuid());
         }
     }
 }

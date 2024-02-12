@@ -1,4 +1,4 @@
-package me.cross.entity;
+package me.cross.handler;
 
 import me.cross.Cross;
 

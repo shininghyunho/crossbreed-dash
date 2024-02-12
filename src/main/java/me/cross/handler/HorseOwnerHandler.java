@@ -1,5 +1,6 @@
-package me.cross.entity;
+package me.cross.handler;
 
+import me.cross.entity.HorseAbility;
 import net.minecraft.nbt.NbtCompound;
 
 import java.util.HashMap;
@@ -8,7 +9,7 @@ import java.util.UUID;
 
 public class HorseOwnerHandler {
     private static final String HORSE_ABILITIES_MAP_KEY = "HorseAbilitiesMap";
-    public static final Map<UUID,Map<UUID,HorseAbility>> horseAbilitiesMap = new HashMap<>();
+    public static final Map<UUID,Map<UUID, HorseAbility>> horseAbilitiesMap = new HashMap<>();
 
     public static void addHorseAbility(UUID playerUUID, UUID horseUUID, HorseAbility horseAbility) {
         if(horseAbilitiesMap.containsKey(playerUUID)) {
