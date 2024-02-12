@@ -21,11 +21,43 @@ public class CustomBlock {
     private static final float UNBREAKABLE_BLOCK_HARDNESS = VERY_LARGE_FLOAT;
     private static final float UNBREAKABLE_BLOCK_RESISTANCE = VERY_LARGE_FLOAT;
 
-    // register unbreakable dirt path block
+    // 경기장 바닥
     public static final Block UNBREAKABLE_DIRT_PATH_BLOCK = registerBlock("unbreakable_dirt_path",
             new Block(FabricBlockSettings.create().strength(UNBREAKABLE_BLOCK_HARDNESS, UNBREAKABLE_BLOCK_RESISTANCE)),
             ItemGroups.BUILDING_BLOCKS);
-    public static final Block UNBREAKABLE_CHECKPOINT_BLOCK = registerBlock("unbreakable_checkpoint",
+    // 경기장 울타리 TODO : 지금은 cube 블록인데 fence 블록으로 변경해야함
+    public static final Block UNBREAKABLE_FENCE_BLOCK = registerBlock("unbreakable_fence",
+            new Block(FabricBlockSettings.create().strength(UNBREAKABLE_BLOCK_HARDNESS, UNBREAKABLE_BLOCK_RESISTANCE)),
+            ItemGroups.BUILDING_BLOCKS);
+    // 총 10개의 체크포인트 블록을 등록
+    public static final Block UNBREAKABLE_CHECKPOINT_BLOCK_0 = registerBlock("unbreakable_checkpoint_0",
+            new Block(FabricBlockSettings.create().strength(UNBREAKABLE_BLOCK_HARDNESS, UNBREAKABLE_BLOCK_RESISTANCE)),
+            ItemGroups.BUILDING_BLOCKS);
+    public static final Block UNBREAKABLE_CHECKPOINT_BLOCK_1 = registerBlock("unbreakable_checkpoint_1",
+            new Block(FabricBlockSettings.create().strength(UNBREAKABLE_BLOCK_HARDNESS, UNBREAKABLE_BLOCK_RESISTANCE)),
+            ItemGroups.BUILDING_BLOCKS);
+    public static final Block UNBREAKABLE_CHECKPOINT_BLOCK_2 = registerBlock("unbreakable_checkpoint_2",
+            new Block(FabricBlockSettings.create().strength(UNBREAKABLE_BLOCK_HARDNESS, UNBREAKABLE_BLOCK_RESISTANCE)),
+            ItemGroups.BUILDING_BLOCKS);
+    public static final Block UNBREAKABLE_CHECKPOINT_BLOCK_3 = registerBlock("unbreakable_checkpoint_3",
+            new Block(FabricBlockSettings.create().strength(UNBREAKABLE_BLOCK_HARDNESS, UNBREAKABLE_BLOCK_RESISTANCE)),
+            ItemGroups.BUILDING_BLOCKS);
+    public static final Block UNBREAKABLE_CHECKPOINT_BLOCK_4 = registerBlock("unbreakable_checkpoint_4",
+            new Block(FabricBlockSettings.create().strength(UNBREAKABLE_BLOCK_HARDNESS, UNBREAKABLE_BLOCK_RESISTANCE)),
+            ItemGroups.BUILDING_BLOCKS);
+    public static final Block UNBREAKABLE_CHECKPOINT_BLOCK_5 = registerBlock("unbreakable_checkpoint_5",
+            new Block(FabricBlockSettings.create().strength(UNBREAKABLE_BLOCK_HARDNESS, UNBREAKABLE_BLOCK_RESISTANCE)),
+            ItemGroups.BUILDING_BLOCKS);
+    public static final Block UNBREAKABLE_CHECKPOINT_BLOCK_6 = registerBlock("unbreakable_checkpoint_6",
+            new Block(FabricBlockSettings.create().strength(UNBREAKABLE_BLOCK_HARDNESS, UNBREAKABLE_BLOCK_RESISTANCE)),
+            ItemGroups.BUILDING_BLOCKS);
+    public static final Block UNBREAKABLE_CHECKPOINT_BLOCK_7 = registerBlock("unbreakable_checkpoint_7",
+            new Block(FabricBlockSettings.create().strength(UNBREAKABLE_BLOCK_HARDNESS, UNBREAKABLE_BLOCK_RESISTANCE)),
+            ItemGroups.BUILDING_BLOCKS);
+    public static final Block UNBREAKABLE_CHECKPOINT_BLOCK_8 = registerBlock("unbreakable_checkpoint_8",
+            new Block(FabricBlockSettings.create().strength(UNBREAKABLE_BLOCK_HARDNESS, UNBREAKABLE_BLOCK_RESISTANCE)),
+            ItemGroups.BUILDING_BLOCKS);
+    public static final Block UNBREAKABLE_CHECKPOINT_BLOCK_9 = registerBlock("unbreakable_checkpoint_9",
             new Block(FabricBlockSettings.create().strength(UNBREAKABLE_BLOCK_HARDNESS, UNBREAKABLE_BLOCK_RESISTANCE)),
             ItemGroups.BUILDING_BLOCKS);
 

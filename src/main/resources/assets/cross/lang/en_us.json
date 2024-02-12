@@ -1,4 +1,15 @@
 {
   "block.cross.unbreakable_dirt_path" : "Unbreakable Dirt Path",
-  "block.cross.unbreakable_checkpoint" : "Unbreakable Checkpoint"
+  "block.cross.unbreakable_fence" : "Unbreakable Fence",
+
+  "block.cross.unbreakable_checkpoint_0" : "Unbreakable Checkpoint 0",
+  "block.cross.unbreakable_checkpoint_1" : "Unbreakable Checkpoint 1",
+  "block.cross.unbreakable_checkpoint_2" : "Unbreakable Checkpoint 2",
+  "block.cross.unbreakable_checkpoint_3" : "Unbreakable Checkpoint 3",
+  "block.cross.unbreakable_checkpoint_4" : "Unbreakable Checkpoint 4",
+  "block.cross.unbreakable_checkpoint_5" : "Unbreakable Checkpoint 5",
+  "block.cross.unbreakable_checkpoint_6" : "Unbreakable Checkpoint 6",
+  "block.cross.unbreakable_checkpoint_7" : "Unbreakable Checkpoint 7",
+  "block.cross.unbreakable_checkpoint_8" : "Unbreakable Checkpoint 8",
+  "block.cross.unbreakable_checkpoint_9" : "Unbreakable Checkpoint 9"
 }

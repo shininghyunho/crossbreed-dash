@@ -1,5 +1,0 @@
-{
-  "variants" : {
-    "" : { "model" : "cross:block/unbreakable_checkpoint" }
-  }
-}
