@@ -7,6 +7,6 @@
     "south" : "cross:block/unbreakable_dirt_path_side",
     "west" : "cross:block/unbreakable_dirt_path_side",
     "east" : "cross:block/unbreakable_dirt_path_side",
-    "particles" : "cross:block/unbreakable_dirt_path_side"
+    "particle" : "cross:block/unbreakable_dirt_path_side"
   }
 }
