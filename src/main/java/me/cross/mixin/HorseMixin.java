@@ -49,14 +49,12 @@ public abstract class HorseMixin extends Entity {
     // putPlayerOnBack
     @Inject(at = @At("TAIL"), method = "putPlayerOnBack", cancellable = true)
     private void putPlayerOnBack(PlayerEntity player, CallbackInfo ci) {
-        if(getWorld().isClient()) {
-            ActionResult result = HorseBondWithPlayerCallback.EVENT.invoker().interact(player, (AbstractHorseEntity) (Object) this);
-            if(result != ActionResult.PASS) {
-                ci.cancel();
-            }
-
-            // set horseAbility
-            if(horseAbility==null) horseAbility = HorseOwnerHandler.getHorseAbility(player.getUuid(), getUuid());
+        ActionResult result = HorseBondWithPlayerCallback.EVENT.invoker().interact(player, (AbstractHorseEntity) (Object) this);
+        if(result != ActionResult.PASS) {
+            ci.cancel();
         }
+
+        // set horseAbility
+        if(horseAbility==null) horseAbility = HorseOwnerHandler.getHorseAbility(player.getUuid(), getUuid());
     }
 }
