@@ -27,5 +27,39 @@ public interface RacingCallback {
                 return ActionResult.PASS;
             });
 
+    Event<RacingCallback> RUNNING = EventFactory.createArrayBacked(RacingCallback.class,
+            (listeners) -> () -> {
+                for (RacingCallback listener : listeners) {
+                    ActionResult result = listener.interact();
+                    if (result != ActionResult.PASS) {
+                        return result;
+                    }
+                }
+                return ActionResult.PASS;
+            });
+
+    Event<RacingCallback> FINISHED = EventFactory.createArrayBacked(RacingCallback.class,
+            (listeners) -> () -> {
+                for (RacingCallback listener : listeners) {
+                    ActionResult result = listener.interact();
+                    if (result != ActionResult.PASS) {
+                        return result;
+                    }
+                }
+                return ActionResult.PASS;
+            });
+
+    // 이벤트가 완전히 종료
+    Event<RacingCallback> END = EventFactory.createArrayBacked(RacingCallback.class,
+            (listeners) -> () -> {
+                for (RacingCallback listener : listeners) {
+                    ActionResult result = listener.interact();
+                    if (result != ActionResult.PASS) {
+                        return result;
+                    }
+                }
+                return ActionResult.PASS;
+            });
+
     ActionResult interact();
 }

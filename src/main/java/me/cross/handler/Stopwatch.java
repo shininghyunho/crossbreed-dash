@@ -8,18 +8,26 @@ import java.util.TimerTask;
 
 public class Stopwatch {
     // enum stopwatch mod : ready for racing
-    public enum MOD {
-        READY_FOR_RACING,
-        READY_FOR_RUNNING,
+    public enum MODE {
+        READY_FOR_RACING("READY_FOR_RACING"),
+        READY_FOR_RUNNING("READY_FOR_RUNNING"),
+        COUNTDOWN("COUNTDOWN"),
+        FINISHED("FINISHED"),;
+
+        final String name;
+
+        MODE(String name) {
+            this.name = name;
+        }
     }
 
     /**
      * @param initialTime 초 단위로 설정
      */
-    public Stopwatch(long initialTime, MOD mod) {
+    public Stopwatch(long initialTime, MODE MODE) {
         this.nowTime = initialTime;
         this.initialTime = initialTime;
-        this.mod = mod;
+        this.mode = MODE;
     }
 
     private final Timer timer = new Timer();
@@ -27,7 +35,7 @@ public class Stopwatch {
     // 1 min
     private long nowTime;
     private final long initialTime;
-    private final MOD mod;
+    private final MODE mode;
 
     public void start() {
         // 이미 시작되어 있다면 무시
@@ -36,10 +44,11 @@ public class Stopwatch {
         task = new TimerTask() {
             @Override
             public void run() {
-                Cross.LOGGER.info("time : " + nowTime);
+                Cross.LOGGER.info("Stopwatch MODE : " + mode.name + ", nowTime : " + nowTime);
                 if(nowTime==0) {
-                    if(mod == MOD.READY_FOR_RACING) RacingCallback.READY_FOR_RACING.invoker().interact();
-                    else if(mod == MOD.READY_FOR_RUNNING) RacingCallback.READY_FOR_RUNNING.invoker().interact();
+                    if(mode == MODE.READY_FOR_RACING) RacingCallback.READY_FOR_RACING.invoker().interact();
+                    else if(mode == MODE.READY_FOR_RUNNING) RacingCallback.READY_FOR_RUNNING.invoker().interact();
+                    else if(mode == MODE.COUNTDOWN) RacingCallback.RUNNING.invoker().interact();
                 }
                 // 1초 감소하다가 0이 되면 초기화
                 nowTime=0>=nowTime?initialTime:nowTime-1;
@@ -49,7 +58,11 @@ public class Stopwatch {
         timer.schedule(task, 0, 1000);
     }
 
-    public void stop() {
+    public void pause() {
         if(task!=null) task.cancel();
+    }
+    public void stop() {
+        pause();
+        nowTime = initialTime;
     }
 }
