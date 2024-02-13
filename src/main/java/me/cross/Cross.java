@@ -2,9 +2,11 @@ package me.cross;
 
 import me.cross.custom.CustomBlock;
 import me.cross.custom.event.horse.HorseBondWithPlayerCallback;
+import me.cross.custom.event.race.RacingCallback;
 import me.cross.entity.HorseAbility;
 import me.cross.handler.HorseOwnerHandler;
-import me.cross.handler.RacingStopwatch;
+import me.cross.handler.RacingHandler;
+import me.cross.handler.Stopwatch;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -19,10 +21,14 @@ import net.minecraft.util.ActionResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class Cross implements ModInitializer {
 	public static final String MOD_ID = "cross";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-	private static long prevTime = 0;
+	private static final long RACING_INTERVAL_SEC = 30;
+	private static final Stopwatch stopwatchForRacingReady = new Stopwatch(RACING_INTERVAL_SEC, Stopwatch.RACING_MOD.READY_FOR_RACING);
 
 	@Override
 	public void onInitialize() {
@@ -51,23 +57,24 @@ public class Cross implements ModInitializer {
 		// server start, stop
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			LOGGER.info("stopwatch start");
-			RacingStopwatch.start();
+			stopwatchForRacingReady.start();
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			LOGGER.info("stopwatch stop");
-			RacingStopwatch.stop();
+			stopwatchForRacingReady.stop();
 		});
 
 		// for every tick
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
-			long time=RacingStopwatch.getTime();
-			// 동기화 문제로 인해 같은 시간에 두번 호출되는 것을 방지
-			if(prevTime==time) return;
-			prevTime=time;
-
-			sendStopwatchMessage(time, server);
 		});
 
+		// 레이스 준비.
+		RacingCallback.READY.register(() -> {
+			LOGGER.info("RacingCallback.START event");
+			// race ready
+			RacingHandler.ready();
+			return ActionResult.PASS;
+		});
 	}
 
 	private void addAbility(PlayerEntity player, AbstractHorseEntity horse) {
@@ -85,12 +92,7 @@ public class Cross implements ModInitializer {
 			Cross.LOGGER.info("horseAbility : " + horseAbility);
 		}
 	}
-	// TODO : 타이머 시간 변경
-	private void sendStopwatchMessage(long time, MinecraftServer server) {
-		if(time%10==0) sendMessage("time : " + time, server);
-		else if(time==1) sendMessage("땡땡땡 이벤트 시작", server);
-	}
-	private void sendMessage(String message, MinecraftServer server) {
+	private void broadcast(String message, MinecraftServer server) {
 		PlayerManager playerManager = server.getPlayerManager();
 		Text text = Text.of(message);
 		playerManager.broadcast(text, false);
