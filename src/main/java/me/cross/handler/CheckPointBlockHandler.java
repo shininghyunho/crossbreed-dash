@@ -66,7 +66,7 @@ public class CheckPointBlockHandler {
                 blockPosNbt.putInt("x", blockPos.getX());
                 blockPosNbt.putInt("y", blockPos.getY());
                 blockPosNbt.putInt("z", blockPos.getZ());
-                blockPosSetNbt.put(name, blockPosNbt);
+                blockPosSetNbt.put(blockPos.toShortString(), blockPosNbt);
             }
             checkpointBlockPosMapNbt.put(name, blockPosSetNbt);
         }
@@ -77,8 +77,8 @@ public class CheckPointBlockHandler {
         NbtCompound checkpointBlockPosMapNbt = nbt.getCompound(CHECKPOINT_BLOCK_POS_MAP_KEY);
         for(String name : checkpointBlockPosMapNbt.getKeys()) {
             NbtCompound blockPosSetNbt = checkpointBlockPosMapNbt.getCompound(name);
-            for(String blockPosKey : blockPosSetNbt.getKeys()) {
-                NbtCompound blockPosNbt = blockPosSetNbt.getCompound(blockPosKey);
+            for(String blockPosString : blockPosSetNbt.getKeys()) {
+                NbtCompound blockPosNbt = blockPosSetNbt.getCompound(blockPosString);
                 BlockPos blockPos = new BlockPos(blockPosNbt.getInt("x"), blockPosNbt.getInt("y"), blockPosNbt.getInt("z"));
                 checkpointBlockPosMap.get(name).add(blockPos);
             }
