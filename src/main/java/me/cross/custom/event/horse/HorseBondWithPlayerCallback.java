@@ -1,4 +1,4 @@
-package me.cross.custom_event.horse;
+package me.cross.custom.event.horse;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;

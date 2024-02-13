@@ -2,7 +2,7 @@ package me.cross.mixin;
 
 import me.cross.entity.HorseAbility;
 import me.cross.handler.HorseOwnerHandler;
-import me.cross.custom_event.horse.HorseBondWithPlayerCallback;
+import me.cross.custom.event.horse.HorseBondWithPlayerCallback;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.AbstractHorseEntity;
