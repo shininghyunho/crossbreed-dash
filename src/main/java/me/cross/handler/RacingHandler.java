@@ -50,8 +50,8 @@ public class RacingHandler {
         players.forEach(player -> playersUUID.add(player.getUuid()));
     }
 
-    // 움직이지 못하는 모드입니까?
-    public static boolean isNotMoveableMode() {
+    // is ready?
+    public static boolean isReadyMode() {
         return mode == MODE.READY_FOR_RACING || mode == MODE.READY_FOR_RUNNING;
     }
 }

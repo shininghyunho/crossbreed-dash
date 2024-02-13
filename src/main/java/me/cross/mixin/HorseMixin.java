@@ -80,6 +80,6 @@ public abstract class HorseMixin extends Entity {
     @Unique
     private boolean isHorseMoveable() {
         int x = (int) this.getX(), z = (int) this.getZ();
-        return !RacingHandler.isNotMoveableMode() || CheckPointBlockHandler.isPlayerAtStartPoint(x,z);
+        return !RacingHandler.isReadyMode() || CheckPointBlockHandler.isPlayerAtStartPoint(x,z);
     }
 }
