@@ -8,17 +8,18 @@ import java.util.TimerTask;
 
 public class Stopwatch {
     // enum stopwatch mod : ready for racing
-    public enum RACING_MOD {
+    public enum MOD {
         READY_FOR_RACING,
+        READY_FOR_RUNNING,
     }
 
     /**
      * @param initialTime 초 단위로 설정
      */
-    public Stopwatch(long initialTime, RACING_MOD racingMod) {
+    public Stopwatch(long initialTime, MOD mod) {
         this.nowTime = initialTime;
         this.initialTime = initialTime;
-        this.racingMod = racingMod;
+        this.mod = mod;
     }
 
     private final Timer timer = new Timer();
@@ -26,7 +27,7 @@ public class Stopwatch {
     // 1 min
     private long nowTime;
     private final long initialTime;
-    private final RACING_MOD racingMod;
+    private final MOD mod;
 
     public void start() {
         // 이미 시작되어 있다면 무시
@@ -37,7 +38,8 @@ public class Stopwatch {
             public void run() {
                 Cross.LOGGER.info("time : " + nowTime);
                 if(nowTime==0) {
-                    if(racingMod==RACING_MOD.READY_FOR_RACING) RacingCallback.READY.invoker().interact();
+                    if(mod == MOD.READY_FOR_RACING) RacingCallback.READY_FOR_RACING.invoker().interact();
+                    else if(mod == MOD.READY_FOR_RUNNING) RacingCallback.READY_FOR_RUNNING.invoker().interact();
                 }
                 // 1초 감소하다가 0이 되면 초기화
                 nowTime=0>=nowTime?initialTime:nowTime-1;
@@ -49,9 +51,5 @@ public class Stopwatch {
 
     public void stop() {
         if(task!=null) task.cancel();
-    }
-
-    public void reset() {
-        nowTime = initialTime;
     }
 }

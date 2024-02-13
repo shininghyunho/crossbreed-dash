@@ -21,14 +21,14 @@ import net.minecraft.util.ActionResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 public class Cross implements ModInitializer {
 	public static final String MOD_ID = "cross";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	private static final long RACING_INTERVAL_SEC = 30;
-	private static final Stopwatch stopwatchForRacingReady = new Stopwatch(RACING_INTERVAL_SEC, Stopwatch.RACING_MOD.READY_FOR_RACING);
+	private static final long RUNNING_READY_SEC = 30;
+	private static final Stopwatch stopwatchForRacingReady = new Stopwatch(RACING_INTERVAL_SEC, Stopwatch.MOD.READY_FOR_RACING);
+	private static final Stopwatch stopwatchForRunningReady = new Stopwatch(RUNNING_READY_SEC, Stopwatch.MOD.READY_FOR_RUNNING);
+	private static RacingHandler.MOD mod = RacingHandler.MOD.NOT_STARTED;
 
 	@Override
 	public void onInitialize() {
@@ -57,22 +57,41 @@ public class Cross implements ModInitializer {
 		// server start, stop
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			LOGGER.info("stopwatch start");
-			stopwatchForRacingReady.start();
+			if(RacingHandler.mod == RacingHandler.MOD.NOT_STARTED) stopwatchForRacingReady.start();
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			LOGGER.info("stopwatch stop");
-			stopwatchForRacingReady.stop();
+			if(RacingHandler.mod == RacingHandler.MOD.NOT_STARTED) stopwatchForRacingReady.stop();
 		});
 
 		// for every tick
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
+			// 중복 호출 방지
+			if(mod == RacingHandler.mod) return;
+			mod = RacingHandler.mod;
+
+			if(RacingHandler.mod == RacingHandler.MOD.READY_FOR_RACING) {
+				broadcast("경주가 곧 시작됩니다. 준비준비~", server);
+			}
+			else if(RacingHandler.mod == RacingHandler.MOD.READY_FOR_RUNNING) {
+				broadcast("출발선에 서주세요. 곧 출발합니다!", server);
+			}
 		});
 
-		// 레이스 준비.
-		RacingCallback.READY.register(() -> {
-			LOGGER.info("RacingCallback.START event");
-			// race ready
-			RacingHandler.ready();
+		// 레이싱 준비.
+		RacingCallback.READY_FOR_RACING.register(() -> {
+			LOGGER.info("레이싱 준비 이벤트");
+			RacingHandler.readyRorRacing();
+			stopwatchForRacingReady.stop();
+			stopwatchForRunningReady.start();
+			return ActionResult.PASS;
+		});
+
+		// 달리기 준비.
+		RacingCallback.READY_FOR_RUNNING.register(() -> {
+			LOGGER.info("달리기 준비 이벤트");
+			RacingHandler.readyForRunning();
+			stopwatchForRunningReady.stop();
 			return ActionResult.PASS;
 		});
 	}
