@@ -63,21 +63,6 @@ public class CustomBlock {
 
     public static void registerCustomBlock() {
         Cross.LOGGER.info("Registering custom blocks");
-        addCheckpointBlocks();
-    }
-    private static void addCheckpointBlocks() {
-        CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_0);
-        CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_1);
-        CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_2);
-        CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_3);
-        CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_4);
-        CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_5);
-        CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_6);
-        CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_7);
-        CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_8);
-        CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_9);
-
-        CheckPointBlockHandler.initCheckPointBlockPosMap();
     }
 
     private static Block registerBlock(String name, Block block, RegistryKey<ItemGroup> itemGroupKey) {

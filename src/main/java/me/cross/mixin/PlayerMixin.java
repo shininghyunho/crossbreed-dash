@@ -1,5 +1,6 @@
 package me.cross.mixin;
 
+import me.cross.handler.CheckPointBlockHandler;
 import me.cross.handler.HorseOwnerHandler;
 import me.cross.handler.RacingHandler;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,18 +18,21 @@ public abstract class PlayerMixin {
     private void writeCustomDataToNbt(NbtCompound nbt, CallbackInfo ci) {
         // HorseOwnerHandler.horseAbilitiesMap 을 nbt 에 저장
         HorseOwnerHandler.writeToNbt(nbt);
+        CheckPointBlockHandler.writeToNbt(nbt);
     }
 
     @Inject(at = @At("TAIL"), method = "readCustomDataFromNbt")
     private void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
         // nbt 에서 HorseOwnerHandler.horseAbilitiesMap 을 읽어옴
         HorseOwnerHandler.readFromNbt(nbt);
+        CheckPointBlockHandler.readFromNbt(nbt);
     }
 
     // 움직이지 못할때는 내리지 못함
     // dismountVehicle
     @Inject(at = @At("HEAD"), method = "dismountVehicle", cancellable = true)
     private void dismountVehicle(CallbackInfo ci) {
-        if(RacingHandler.isReadyMode()) ci.cancel();
+        // 카운트 다운 or 레이싱 중일때 내리지 못함.
+        if(RacingHandler.isCountdown() || RacingHandler.isRunning()) ci.cancel();
     }
 }

@@ -1,5 +1,6 @@
 package me.cross.mixin;
 
+import me.cross.Cross;
 import me.cross.entity.HorseAbility;
 import me.cross.handler.CheckPointBlockHandler;
 import me.cross.handler.HorseOwnerHandler;
@@ -30,11 +31,10 @@ public abstract class HorseMixin extends Entity {
     // getSaddledSpeed : 말에 탑승하면 tick 당 호출됨
     @Inject(at = @At("TAIL"), method = "getSaddledSpeed", cancellable = true)
     private void getSaddledSpeed(PlayerEntity controllingPlayer,CallbackInfoReturnable<Float> cir) {
-        int x = (int) this.getX(), z = (int) this.getZ();
         // 말이 움직일 수 없는 상태라면 속도를 0으로 설정
-        if(isHorseMoveable()) cir.setReturnValue(0.0F);
+        if(isHorseNotMoveable()) cir.setReturnValue(0.0F);
         // 속도를 n배로 증가시킴
-        else if(horseAbility!=null) cir.setReturnValue(cir.getReturnValue() * horseAbility.speedMultiplier);
+        else if(horseAbility!=null) cir.setReturnValue(cir.getReturnValueF() * horseAbility.speedMultiplier);
     }
 
     // jump
@@ -67,7 +67,7 @@ public abstract class HorseMixin extends Entity {
     @Inject(at = @At("TAIL"), method = "canJump", cancellable = true)
     private void canJump(CallbackInfoReturnable<Boolean> cir) {
         // 말이 점프할 수 없는 상태라면 점프를 막음
-        if(isHorseMoveable()) cir.setReturnValue(false);
+        if(isHorseNotMoveable()) cir.setReturnValue(false);
     }
 
     // isSaddled
@@ -78,8 +78,8 @@ public abstract class HorseMixin extends Entity {
     }
 
     @Unique
-    private boolean isHorseMoveable() {
-        int x = (int) this.getX(), z = (int) this.getZ();
-        return !RacingHandler.isReadyMode() || CheckPointBlockHandler.isPlayerAtStartPoint(x,z);
+    private boolean isHorseNotMoveable() {
+        int x = (int) getX(), z = (int) getZ();
+        return RacingHandler.isCountdown() && CheckPointBlockHandler.isPlayerAtStartPoint(x,z);
     }
 }

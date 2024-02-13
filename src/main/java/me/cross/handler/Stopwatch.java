@@ -7,27 +7,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Stopwatch {
-    // enum stopwatch mod : ready for racing
-    public enum MODE {
-        READY_FOR_RACING("READY_FOR_RACING"),
-        READY_FOR_RUNNING("READY_FOR_RUNNING"),
-        COUNTDOWN("COUNTDOWN"),
-        FINISHED("FINISHED"),;
-
-        final String name;
-
-        MODE(String name) {
-            this.name = name;
-        }
-    }
-
     /**
      * @param initialTime 초 단위로 설정
      */
-    public Stopwatch(long initialTime, MODE MODE) {
+    public Stopwatch(long initialTime, RacingMode mode) {
         this.nowTime = initialTime;
         this.initialTime = initialTime;
-        this.mode = MODE;
+        this.mode = mode;
     }
 
     private final Timer timer = new Timer();
@@ -35,23 +21,27 @@ public class Stopwatch {
     // 1 min
     private long nowTime;
     private final long initialTime;
-    private final MODE mode;
+    private final RacingMode mode;
 
     public void start() {
-        // 이미 시작되어 있다면 무시
-        if(task!=null) return;
+        // 이미 시작되어 있다면 중지
+        if(task!=null) {
+            stop();
+        }
         // 새로운 작업 생성
         task = new TimerTask() {
             @Override
             public void run() {
-                Cross.LOGGER.info("Stopwatch MODE : " + mode.name + ", nowTime : " + nowTime);
+                Cross.LOGGER.info("Stopwatch mode : " + mode.name + ", nowTime : " + nowTime);
                 if(nowTime==0) {
-                    if(mode == MODE.READY_FOR_RACING) RacingCallback.READY_FOR_RACING.invoker().interact();
-                    else if(mode == MODE.READY_FOR_RUNNING) RacingCallback.READY_FOR_RUNNING.invoker().interact();
-                    else if(mode == MODE.COUNTDOWN) RacingCallback.RUNNING.invoker().interact();
+                    if(mode == RacingMode.NOT_STARTED) RacingCallback.READY_FOR_RUNNING.invoker().interact();
+                    else if(mode == RacingMode.READY_FOR_RUNNING) RacingCallback.COUNTDOWN.invoker().interact();
+                    else if(mode == RacingMode.COUNTDOWN) RacingCallback.RUNNING.invoker().interact();
+                    else if(mode == RacingMode.FINISHED) RacingCallback.END.invoker().interact();
+
+                    stop();
                 }
-                // 1초 감소하다가 0이 되면 초기화
-                nowTime=0>=nowTime?initialTime:nowTime-1;
+                nowTime--;
             }
         };
         // 작업 시작

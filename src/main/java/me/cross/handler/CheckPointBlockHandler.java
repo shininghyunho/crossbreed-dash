@@ -1,12 +1,15 @@
 package me.cross.handler;
 
 import me.cross.Cross;
+import me.cross.custom.CustomBlock;
 import net.minecraft.block.Block;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.*;
 
 public class CheckPointBlockHandler {
+    private static final String CHECKPOINT_BLOCK_POS_MAP_KEY = "CheckpointBlockPosMap";
     private static final List<String> checkpointBlocks = new ArrayList<>();
     // 체크포인트 블록마다 좌표들 저장
     private static final Map<String, Set<BlockPos>> checkpointBlockPosMap = new HashMap<>();
@@ -17,6 +20,16 @@ public class CheckPointBlockHandler {
     }
 
     public static void initCheckPointBlockPosMap() {
+        addCheckpointBlock(CustomBlock.UNBREAKABLE_CHECKPOINT_BLOCK_0);
+        addCheckpointBlock(CustomBlock.UNBREAKABLE_CHECKPOINT_BLOCK_1);
+        addCheckpointBlock(CustomBlock.UNBREAKABLE_CHECKPOINT_BLOCK_2);
+        addCheckpointBlock(CustomBlock.UNBREAKABLE_CHECKPOINT_BLOCK_3);
+        addCheckpointBlock(CustomBlock.UNBREAKABLE_CHECKPOINT_BLOCK_4);
+        addCheckpointBlock(CustomBlock.UNBREAKABLE_CHECKPOINT_BLOCK_5);
+        addCheckpointBlock(CustomBlock.UNBREAKABLE_CHECKPOINT_BLOCK_6);
+        addCheckpointBlock(CustomBlock.UNBREAKABLE_CHECKPOINT_BLOCK_7);
+        addCheckpointBlock(CustomBlock.UNBREAKABLE_CHECKPOINT_BLOCK_8);
+        addCheckpointBlock(CustomBlock.UNBREAKABLE_CHECKPOINT_BLOCK_9);
         for(String name : checkpointBlocks) checkpointBlockPosMap.put(name, new HashSet<>());
     }
 
@@ -36,6 +49,39 @@ public class CheckPointBlockHandler {
 
     // 유저가 체크포인트 0 x,z 좌표에 서있다면 true 반환
     public static boolean isPlayerAtStartPoint(int x, int z) {
+        if(checkpointBlocks.isEmpty()) {
+            Cross.LOGGER.error("Checkpoint blocks are empty.");
+            return false;
+        }
         return checkpointBlockPosMap.get(checkpointBlocks.get(0)).stream().anyMatch(pos -> pos.getX() == x && pos.getZ() == z);
+    }
+
+    // 블록 좌표를 nbt 에 저장
+    public static void writeToNbt(NbtCompound nbt) {
+        NbtCompound checkpointBlockPosMapNbt = new NbtCompound();
+        for(String name : checkpointBlockPosMap.keySet()) {
+            NbtCompound blockPosSetNbt = new NbtCompound();
+            for(BlockPos blockPos : checkpointBlockPosMap.get(name)) {
+                NbtCompound blockPosNbt = new NbtCompound();
+                blockPosNbt.putInt("x", blockPos.getX());
+                blockPosNbt.putInt("y", blockPos.getY());
+                blockPosNbt.putInt("z", blockPos.getZ());
+                blockPosSetNbt.put(name, blockPosNbt);
+            }
+            checkpointBlockPosMapNbt.put(name, blockPosSetNbt);
+        }
+        nbt.put(CHECKPOINT_BLOCK_POS_MAP_KEY, checkpointBlockPosMapNbt);
+    }
+
+    public static void readFromNbt(NbtCompound nbt) {
+        NbtCompound checkpointBlockPosMapNbt = nbt.getCompound(CHECKPOINT_BLOCK_POS_MAP_KEY);
+        for(String name : checkpointBlockPosMapNbt.getKeys()) {
+            NbtCompound blockPosSetNbt = checkpointBlockPosMapNbt.getCompound(name);
+            for(String blockPosKey : blockPosSetNbt.getKeys()) {
+                NbtCompound blockPosNbt = blockPosSetNbt.getCompound(blockPosKey);
+                BlockPos blockPos = new BlockPos(blockPosNbt.getInt("x"), blockPosNbt.getInt("y"), blockPosNbt.getInt("z"));
+                checkpointBlockPosMap.get(name).add(blockPos);
+            }
+        }
     }
 }
