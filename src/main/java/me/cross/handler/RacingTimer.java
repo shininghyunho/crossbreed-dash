@@ -1,5 +1,7 @@
 package me.cross.handler;
 
+import me.cross.Cross;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -14,6 +16,7 @@ public class RacingTimer {
             @Override
             public void run() {
                 nowTime++;
+                Cross.LOGGER.info("RacingTimer nowTime : " + nowTime);
             }
         };
         timer.schedule(task, 0, 1000);
