@@ -70,6 +70,13 @@ public abstract class HorseMixin extends Entity {
         if(isHorseMoveable()) cir.setReturnValue(false);
     }
 
+    // isSaddled
+    @Inject(at = @At("TAIL"), method = "isSaddled", cancellable = true)
+    private void isSaddled(CallbackInfoReturnable<Boolean> cir) {
+        // 말이 항상 안장을 타고 있는 상태로 설정
+        cir.setReturnValue(true);
+    }
+
     @Unique
     private boolean isHorseMoveable() {
         int x = (int) this.getX(), z = (int) this.getZ();
