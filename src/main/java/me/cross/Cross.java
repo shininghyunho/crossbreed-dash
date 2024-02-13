@@ -25,14 +25,12 @@ import org.slf4j.LoggerFactory;
 public class Cross implements ModInitializer {
 	public static final String MOD_ID = "cross";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-	private static final long RACING_INTERVAL_SEC = 30;
-	private static final long RUNNING_READY_SEC = 10;
-	private static final long COUNTDOWN_SEC = 5;
+	private static final long RACING_INTERVAL_SEC = 60 * 5, RUNNING_READY_SEC = 60, COUNTDOWN_SEC = 5, FINISHED_SEC = 0;
 	private static final Stopwatch stopwatchForRacingReady = new Stopwatch(RACING_INTERVAL_SEC, Stopwatch.MODE.READY_FOR_RACING);
 	private static final Stopwatch stopwatchForRunningReady = new Stopwatch(RUNNING_READY_SEC, Stopwatch.MODE.READY_FOR_RUNNING);
 	private static final Stopwatch stopwatchForCountdown = new Stopwatch(COUNTDOWN_SEC, Stopwatch.MODE.COUNTDOWN);
-	private static final Stopwatch stopwatchForFinished = new Stopwatch(0, Stopwatch.MODE.FINISHED);
-	private static RacingHandler.MODE MODE = RacingHandler.MODE.NOT_STARTED;
+	private static final Stopwatch stopwatchForFinished = new Stopwatch(FINISHED_SEC, Stopwatch.MODE.FINISHED);
+	private static RacingHandler.MODE racingMode = RacingHandler.MODE.NOT_STARTED;
 
 	@Override
 	public void onInitialize() {
@@ -77,8 +75,8 @@ public class Cross implements ModInitializer {
 		// for every tick
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			// 중복 호출 방지
-			if(MODE == RacingHandler.mode) return;
-			MODE = RacingHandler.mode;
+			if(racingMode == RacingHandler.mode) return;
+			racingMode = RacingHandler.mode;
 
 			broadcastRacingEvent(server);
 		});
