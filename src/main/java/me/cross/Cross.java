@@ -40,14 +40,6 @@ public class Cross implements ModInitializer {
 	}
 
 	private void registerEvents() {
-		// Register the ServerMixin class to the server
-		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
-			BlockState blockState = world.getBlockState(pos);
-			if(blockState.isToolRequired() && !player.isSpectator() && player.getMainHandStack().isEmpty()) {
-				LOGGER.info("블록 파괴 시도 이벤트 발생");
-			}
-			return ActionResult.PASS;
-		});
 		registerHorseEvents();
 		registerServerEvents();
 		registerRacingEvents();
