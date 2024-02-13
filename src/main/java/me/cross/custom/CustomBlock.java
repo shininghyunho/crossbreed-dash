@@ -1,11 +1,11 @@
 package me.cross.custom;
 
 import me.cross.Cross;
+import me.cross.handler.CheckPointBlockHandler;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -63,6 +63,19 @@ public class CustomBlock {
 
     public static void registerCustomBlock() {
         Cross.LOGGER.info("Registering custom blocks");
+        addCheckpointBlocks();
+    }
+    private static void addCheckpointBlocks() {
+        CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_0);
+        CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_1);
+        CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_2);
+        CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_3);
+        CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_4);
+        CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_5);
+        CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_6);
+        CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_7);
+        CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_8);
+        CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_9);
     }
 
     private static Block registerBlock(String name, Block block, RegistryKey<ItemGroup> itemGroupKey) {
