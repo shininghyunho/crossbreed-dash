@@ -76,6 +76,8 @@ public class CustomBlock {
         CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_7);
         CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_8);
         CheckPointBlockHandler.addCheckpointBlock(UNBREAKABLE_CHECKPOINT_BLOCK_9);
+
+        CheckPointBlockHandler.initCheckPointBlockPosMap();
     }
 
     private static Block registerBlock(String name, Block block, RegistryKey<ItemGroup> itemGroupKey) {

@@ -23,34 +23,35 @@ public class RacingHandler {
 
     public static void readyForRacing() {
         mode = MODE.READY_FOR_RACING;
-        // TODO : 경주 준비 로직
     }
 
     public static void readyForRunning() {
-        mode = MODE.READY_FOR_RUNNING;
-        // TODO : 경주 시작 준비 로직
         // add players to RunningHandler
+        playersUUID.clear();
         RunningHandler.addPlayers(new ArrayList<>(playersUUID));
-
+        mode = MODE.READY_FOR_RUNNING;
+        // 플레이어가 체크포인트 0에 도착했다면 움직일 수 없게 설정 (mixin 에서 처리)
     }
 
     public static void run() {
         mode = MODE.RUNNING;
-        // TODO : 경주 시작 로직
     }
 
     public static void finished() {
         mode = MODE.FINISHED;
-        // TODO : 경주 종료 로직
     }
 
     public static void end() {
         mode = MODE.NOT_STARTED;
-        // TODO : 경주 완전 종료 로직
     }
 
     public static void addPlayers(List<ServerPlayerEntity> players) {
         playersUUID.clear();
         players.forEach(player -> playersUUID.add(player.getUuid()));
+    }
+
+    // 움직이지 못하는 모드입니까?
+    public static boolean isNotMoveableMode() {
+        return mode == MODE.READY_FOR_RACING || mode == MODE.READY_FOR_RUNNING;
     }
 }

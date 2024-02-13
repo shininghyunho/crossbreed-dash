@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 public class Cross implements ModInitializer {
 	public static final String MOD_ID = "cross";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-	private static final long RACING_INTERVAL_SEC = 60 * 5, RUNNING_READY_SEC = 60, COUNTDOWN_SEC = 5, FINISHED_SEC = 0;
+	private static final long RACING_INTERVAL_SEC = 5 , RUNNING_READY_SEC = 10, COUNTDOWN_SEC = 60*3, FINISHED_SEC = 60;
 	private static final Stopwatch stopwatchForRacingReady = new Stopwatch(RACING_INTERVAL_SEC, Stopwatch.MODE.READY_FOR_RACING);
 	private static final Stopwatch stopwatchForRunningReady = new Stopwatch(RUNNING_READY_SEC, Stopwatch.MODE.READY_FOR_RUNNING);
 	private static final Stopwatch stopwatchForCountdown = new Stopwatch(COUNTDOWN_SEC, Stopwatch.MODE.COUNTDOWN);
@@ -149,7 +149,7 @@ public class Cross implements ModInitializer {
 			broadcast("경주 시작! 달리세요!!", server);
 		}
 		else if(RacingHandler.mode == RacingHandler.MODE.FINISHED) {
-			broadcast("모두 도착했습니다. 경주가 종료되었습니다.", server);
+			broadcast("모두 도착했습니다. 경주가 종료되었습니다. 보상을 확인해보세요.", server);
 		}
 		else if(RacingHandler.mode == RacingHandler.MODE.NOT_STARTED) {
 			broadcast("이번 경기가 완전히 종료되었습니다.", server);
