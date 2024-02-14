@@ -1,11 +1,10 @@
 package me.cross;
 
-import com.mojang.brigadier.Command;
-import com.mojang.brigadier.CommandDispatcher;
 import me.cross.custom.CustomBlock;
 import me.cross.custom.command.ModCommand;
 import me.cross.custom.event.horse.HorseBondWithPlayerCallback;
 import me.cross.custom.event.race.RacingCallback;
+import me.cross.custom.event.race.RacingCountdownTickCallback;
 import me.cross.entity.HorseAbility;
 import me.cross.handler.*;
 import net.fabricmc.api.ModInitializer;
@@ -16,13 +15,10 @@ import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static net.minecraft.server.command.CommandManager.literal;
 
 public class Cross implements ModInitializer {
 	public static final String MOD_ID = "cross";
@@ -121,6 +117,12 @@ public class Cross implements ModInitializer {
 			stopwatchForFinished.stop();
 			stopwatchForNotStarted.start();
 			RacingHandler.end();
+			return ActionResult.PASS;
+		});
+
+		// 카운트다운 틱
+		RacingCountdownTickCallback.COUNTDOWN_TICK.register((nowTime) -> {
+			broadcast("카운트다운 : " + nowTime + "초");
 			return ActionResult.PASS;
 		});
 	}
