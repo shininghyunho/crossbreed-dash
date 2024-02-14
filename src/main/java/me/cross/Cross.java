@@ -24,11 +24,6 @@ public class Cross implements ModInitializer {
 	public static final String MOD_ID = "cross";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static MinecraftServer server;
-	private static final long RACING_INTERVAL_SEC = 10, RUNNING_READY_SEC = 5, COUNTDOWN_SEC = 5, FINISHED_SEC = 60;
-	private static final Stopwatch stopwatchForNotStarted = new Stopwatch(RACING_INTERVAL_SEC, RacingMode.NOT_STARTED);
-	private static final Stopwatch stopwatchForRunningReady = new Stopwatch(RUNNING_READY_SEC, RacingMode.READY_FOR_RUNNING);
-	private static final Stopwatch stopwatchForCountdown = new Stopwatch(COUNTDOWN_SEC, RacingMode.COUNTDOWN);
-	private static final Stopwatch stopwatchForFinished = new Stopwatch(FINISHED_SEC, RacingMode.FINISHED);
 
 	@Override
 	public void onInitialize() {
@@ -39,12 +34,28 @@ public class Cross implements ModInitializer {
 		LOGGER.info("Hello Fabric world!");
 	}
 
+	public static void startMod() {
+		LOGGER.info("startMod");
+		broadcast("경주가 시작됩니다. 출발선에 서주세요.");
+		setModStart();
+	}
+	public static void stopMod() {
+		LOGGER.info("stopMod");
+		broadcast("경주가 완전히 종료되었습니다. 다음 경주를 기다려주세요.");
+		setModStop();
+	}
+	public static void broadcast(String message) {
+		if(server == null) return;
+		PlayerManager playerManager = server.getPlayerManager();
+		playerManager.broadcast(Text.of(message), false);
+	}
+
+	//  Private Methods
 	private void registerEvents() {
 		registerHorseEvents();
 		registerServerEvents();
 		registerRacingEvents();
 	}
-
 	private void registerHorseEvents() {
 		// HorseBondWithPlayerCallback.EVENT.register
 		HorseBondWithPlayerCallback.EVENT.register((player, horse) -> {
@@ -53,7 +64,6 @@ public class Cross implements ModInitializer {
 			return ActionResult.PASS;
 		});
 	}
-
 	private void registerServerEvents() {
 		// server start, stop
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
@@ -67,19 +77,10 @@ public class Cross implements ModInitializer {
 			if(Cross.server == null) Cross.server = server;
 		});
 	}
-
-	private static void stopAllStopwatches() {
-		stopwatchForNotStarted.stop();
-		stopwatchForRunningReady.stop();
-		stopwatchForCountdown.stop();
-		stopwatchForFinished.stop();
-	}
 	private void registerRacingEvents() {
 		// 달리기 준비.
 		RacingCallback.READY_FOR_RUNNING.register(() -> {
 			LOGGER.info("달리기 준비 이벤트");
-			stopwatchForNotStarted.stop();
-			stopwatchForRunningReady.start();
 			RacingHandler.readyForRunning();
 			return ActionResult.PASS;
 		});
@@ -87,8 +88,6 @@ public class Cross implements ModInitializer {
 		// 카운트다운
 		RacingCallback.COUNTDOWN.register(() -> {
 			LOGGER.info("카운트다운 이벤트");
-			stopwatchForRunningReady.stop();
-			stopwatchForCountdown.start();
 			RacingHandler.countdown();
 			return ActionResult.PASS;
 		});
@@ -96,8 +95,6 @@ public class Cross implements ModInitializer {
 		// Running
 		RacingCallback.RUNNING.register(() -> {
 			LOGGER.info("달리기 이벤트");
-			stopwatchForCountdown.stop();
-			RacingTimer.start();
 			RacingHandler.run();
 			return ActionResult.PASS;
 		});
@@ -105,8 +102,6 @@ public class Cross implements ModInitializer {
 		// Finished TODO : 아직 호출하는 곳이 없음
 		RacingCallback.FINISHED.register(() -> {
 			LOGGER.info("경주 종료 이벤트");
-			RacingTimer.stop();
-			stopwatchForFinished.start();
 			RacingHandler.finished();
 			return ActionResult.PASS;
 		});
@@ -114,8 +109,6 @@ public class Cross implements ModInitializer {
 		// END
 		RacingCallback.END.register(() -> {
 			LOGGER.info("경주 완전 종료 이벤트, 다음 경기 준비");
-			stopwatchForFinished.stop();
-			stopwatchForNotStarted.start();
 			RacingHandler.end();
 			return ActionResult.PASS;
 		});
@@ -131,22 +124,12 @@ public class Cross implements ModInitializer {
 			ModCommand.register(dispatcher);
 		}));
 	}
-	public static void startMod() {
-		LOGGER.info("startMod");
-		broadcast("경주가 시작됩니다. 출발선에 서주세요.");
-		setModStart();
-	}
-	public static void stopMod() {
-		LOGGER.info("stopMod");
-		broadcast("경주가 완전히 종료되었습니다. 다음 경주를 기다려주세요.");
-		setModStop();
-	}
 	private static void setModStart() {
-		stopwatchForNotStarted.start();
+		StopwatchHandler.forNotStarted.start();
 		RacingHandler.init();
 	}
 	private static void setModStop() {
-		stopAllStopwatches();
+		StopwatchHandler.stopAll();
 		RacingHandler.init();
 	}
 	private void addAbility(PlayerEntity player, AbstractHorseEntity horse) {
@@ -163,11 +146,5 @@ public class Cross implements ModInitializer {
 
 			Cross.LOGGER.info("horseAbility : " + horseAbility);
 		}
-	}
-	public static void broadcast(String message) {
-		if(server == null) return;
-		PlayerManager playerManager = server.getPlayerManager();
-		Text text = Text.of(message);
-		playerManager.broadcast(text, false);
 	}
 }
