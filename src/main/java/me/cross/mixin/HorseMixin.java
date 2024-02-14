@@ -1,11 +1,11 @@
 package me.cross.mixin;
 
-import me.cross.Cross;
 import me.cross.entity.HorseAbility;
 import me.cross.handler.CheckPointBlockHandler;
 import me.cross.handler.HorseOwnerHandler;
 import me.cross.custom.event.horse.HorseBondWithPlayerCallback;
 import me.cross.handler.RacingHandler;
+import me.cross.handler.RunningHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.AbstractHorseEntity;
@@ -77,9 +77,29 @@ public abstract class HorseMixin extends Entity {
         cir.setReturnValue(true);
     }
 
+    // every tick
+    @Inject(at = @At("TAIL"), method = "tick")
+    private void tick(CallbackInfo ci) {
+        // 러닝 모드일때 체크포인트 지나갔는지 확인
+        if(RacingHandler.isRunning()) {
+            int x = (int) getX(), z = (int) getZ(), idx = RunningHandler.getCheckpointIdx(getUuid());
+            if(idx==-1) return;
+
+            // 체크포인트 지나갔는지 확인
+            if(CheckPointBlockHandler.isPlayerAtIdxPoint(x,z,idx) && RunningHandler.isPassedInorder(getUuid(),idx)) {
+                RunningHandler.setPassed(getUuid(),idx);
+                RunningHandler.setNextCheckpointIdx(getUuid());
+            }
+            // 1바퀴 돌았는지 확인
+            if(RunningHandler.isLapFinished(getUuid())) {
+                RunningHandler.setNextLap(getUuid());
+            }
+        }
+    }
+
     @Unique
     private boolean isHorseNotMoveable() {
         int x = (int) getX(), z = (int) getZ();
-        return RacingHandler.isCountdown() && CheckPointBlockHandler.isPlayerAtStartPoint(x,z);
+        return (RacingHandler.isReadyForRunning() || RacingHandler.isCountdown()) && CheckPointBlockHandler.isPlayerAtIdxPoint(x,z,0);
     }
 }

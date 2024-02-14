@@ -32,28 +32,23 @@ public class CheckPointBlockHandler {
         addCheckpointBlock(CustomBlock.UNBREAKABLE_CHECKPOINT_BLOCK_9);
         for(String name : checkpointBlocks) checkpointBlockPosMap.put(name, new HashSet<>());
     }
-
     public static boolean isCheckpoint(Block block) {
         return checkpointBlocks.contains(block.getTranslationKey());
     }
-
     // 체크포인트 블록마다 좌표 추가
     public static void addCheckPointPos(Block block, BlockPos blockPos) {
         if(checkpointBlockPosMap.containsKey(block.getTranslationKey())) checkpointBlockPosMap.get(block.getTranslationKey()).add(blockPos);
     }
-
     // 체크포인트 블록마다 좌표 제거
     public static void removeCheckPointPos(Block block, BlockPos blockPos) {
         if(checkpointBlockPosMap.containsKey(block.getTranslationKey())) checkpointBlockPosMap.get(block.getTranslationKey()).remove(blockPos);
     }
 
-    // 유저가 체크포인트 0 x,z 좌표에 서있다면 true 반환
-    public static boolean isPlayerAtStartPoint(int x, int z) {
-        if(checkpointBlocks.isEmpty()) {
-            Cross.LOGGER.error("Checkpoint blocks are empty.");
-            return false;
-        }
-        return checkpointBlockPosMap.get(checkpointBlocks.get(0)).stream().anyMatch(pos -> pos.getX() == x && pos.getZ() == z);
+    public static boolean isPlayerAtIdxPoint(int x, int z, int idx) {
+        if(idx < 0 || idx >= checkpointBlocks.size()) return false;
+        String blockName = checkpointBlocks.get(idx);
+        if(!checkpointBlockPosMap.containsKey(blockName)) return false;
+        return checkpointBlockPosMap.get(blockName).stream().anyMatch(pos -> pos.getX() == x && pos.getZ() == z);
     }
 
     // 블록 좌표를 nbt 에 저장

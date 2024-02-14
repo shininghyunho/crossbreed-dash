@@ -19,7 +19,6 @@ public class RacingHandler {
         StopwatchHandler.forRunningReady.start();
 
         addPlayers(Cross.server.getPlayerManager().getPlayerList());
-        RunningHandler.addPlayers(new ArrayList<>(playersUUID));
     }
     public static void countdown() {
         Cross.broadcast("카운트다운 시작!");
@@ -34,8 +33,10 @@ public class RacingHandler {
         mode = RacingMode.RUNNING;
 
         StopwatchHandler.forCountdown.stop();
-
         RacingTimer.start();
+
+        RunningHandler.addPlayers(new ArrayList<>(playersUUID));
+
     }
 
     public static void finished() {
@@ -43,7 +44,6 @@ public class RacingHandler {
         mode = RacingMode.FINISHED;
 
         RacingTimer.stop();
-
         StopwatchHandler.forFinished.start();
     }
 
@@ -59,16 +59,15 @@ public class RacingHandler {
         playersUUID.clear();
         players.forEach(player -> playersUUID.add(player.getUuid()));
     }
-
-    // is ready?
+    public static boolean isReadyForRunning() {
+        return mode == RacingMode.READY_FOR_RUNNING;
+    }
     public static boolean isCountdown() {
         return mode == RacingMode.COUNTDOWN;
     }
-
     public static boolean isRunning() {
         return mode == RacingMode.RUNNING;
     }
-
     public static void init() {
         mode = RacingMode.NOT_STARTED;
     }

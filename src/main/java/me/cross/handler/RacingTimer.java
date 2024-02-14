@@ -27,7 +27,7 @@ public class RacingTimer {
         nowTime = 0;
     }
 
-    public static long getNowTime() {
+    public static Long getTime() {
         return nowTime;
     }
 }
