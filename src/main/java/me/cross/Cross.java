@@ -3,6 +3,7 @@ package me.cross;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import me.cross.custom.CustomBlock;
+import me.cross.custom.command.ModCommand;
 import me.cross.custom.event.horse.HorseBondWithPlayerCallback;
 import me.cross.custom.event.race.RacingCallback;
 import me.cross.entity.HorseAbility;
@@ -27,7 +28,7 @@ public class Cross implements ModInitializer {
 	public static final String MOD_ID = "cross";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static MinecraftServer server;
-	private static final long RACING_INTERVAL_SEC = 20, RUNNING_READY_SEC = 10, COUNTDOWN_SEC = 10, FINISHED_SEC = 60;
+	private static final long RACING_INTERVAL_SEC = 10, RUNNING_READY_SEC = 5, COUNTDOWN_SEC = 5, FINISHED_SEC = 60;
 	private static final Stopwatch stopwatchForNotStarted = new Stopwatch(RACING_INTERVAL_SEC, RacingMode.NOT_STARTED);
 	private static final Stopwatch stopwatchForRunningReady = new Stopwatch(RUNNING_READY_SEC, RacingMode.READY_FOR_RUNNING);
 	private static final Stopwatch stopwatchForCountdown = new Stopwatch(COUNTDOWN_SEC, RacingMode.COUNTDOWN);
@@ -125,31 +126,24 @@ public class Cross implements ModInitializer {
 	}
 	private void registerModCommands() {
 		CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> {
-			registerFromDispatcher(dispatcher);
+			ModCommand.register(dispatcher);
 		}));
 	}
-	private void registerFromDispatcher(CommandDispatcher<ServerCommandSource> dispatcher) {
-		// execute startMod
-		dispatcher.register(literal("startMod").executes(context -> {
-			startMod();
-			return Command.SINGLE_SUCCESS;
-		}));
-
-		// execute stopMod
-		dispatcher.register(literal("stopMod").executes(context -> {
-			stopMod();
-			return Command.SINGLE_SUCCESS;
-		}));
-	}
-	private static void startMod() {
+	public static void startMod() {
 		LOGGER.info("startMod");
 		broadcast("경주가 시작됩니다. 출발선에 서주세요.");
+		setModStart();
+	}
+	public static void stopMod() {
+		LOGGER.info("stopMod");
+		broadcast("경주가 완전히 종료되었습니다. 다음 경주를 기다려주세요.");
+		setModStop();
+	}
+	private static void setModStart() {
 		stopwatchForNotStarted.start();
 		RacingHandler.init();
 	}
-	private static void stopMod() {
-		LOGGER.info("stopMod");
-		broadcast("경주가 완전히 종료되었습니다. 다음 경주를 기다려주세요.");
+	private static void setModStop() {
 		stopAllStopwatches();
 		RacingHandler.init();
 	}
