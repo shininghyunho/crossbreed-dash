@@ -36,7 +36,6 @@ public class RacingHandler {
         StopwatchHandler.forCountdown.stop();
 
         RacingTimer.start();
-        RacingHandler.run();
     }
 
     public static void finished() {
