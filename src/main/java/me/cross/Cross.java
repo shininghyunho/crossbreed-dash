@@ -26,13 +26,12 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class Cross implements ModInitializer {
 	public static final String MOD_ID = "cross";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-	private static MinecraftServer crossServer;
+	public static MinecraftServer server;
 	private static final long RACING_INTERVAL_SEC = 20, RUNNING_READY_SEC = 10, COUNTDOWN_SEC = 10, FINISHED_SEC = 60;
 	private static final Stopwatch stopwatchForNotStarted = new Stopwatch(RACING_INTERVAL_SEC, RacingMode.NOT_STARTED);
 	private static final Stopwatch stopwatchForRunningReady = new Stopwatch(RUNNING_READY_SEC, RacingMode.READY_FOR_RUNNING);
 	private static final Stopwatch stopwatchForCountdown = new Stopwatch(COUNTDOWN_SEC, RacingMode.COUNTDOWN);
 	private static final Stopwatch stopwatchForFinished = new Stopwatch(FINISHED_SEC, RacingMode.FINISHED);
-	private static RacingMode racingMode = RacingMode.NOT_STARTED;
 
 	@Override
 	public void onInitialize() {
@@ -68,12 +67,7 @@ public class Cross implements ModInitializer {
 		});
 		// for every tick
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
-			if(crossServer == null) crossServer = server;
-			// 중복 호출 방지
-			if(racingMode == RacingHandler.mode) return;
-			racingMode = RacingHandler.mode;
-
-			broadcastRacingEvent(server);
+			if(Cross.server == null) Cross.server = server;
 		});
 	}
 
@@ -174,28 +168,9 @@ public class Cross implements ModInitializer {
 			Cross.LOGGER.info("horseAbility : " + horseAbility);
 		}
 	}
-	private void broadcastRacingEvent(MinecraftServer server) {
-		if(RacingHandler.mode == RacingMode.READY_FOR_RUNNING) {
-			broadcast("경주가 곧 시작됩니다. 출발선에 서주세요.");
-			// register all players
-			RacingHandler.addPlayers(server.getPlayerManager().getPlayerList());
-		}
-		else if(RacingHandler.mode == RacingMode.COUNTDOWN) {
-			broadcast("카운트다운 시작!");
-		}
-		else if(RacingHandler.mode == RacingMode.RUNNING) {
-			broadcast("경주 시작! 달리세요!!");
-		}
-		else if(RacingHandler.mode == RacingMode.FINISHED) {
-			broadcast("모두 도착했습니다. 경주가 종료되었습니다. 순위를 확인해보세요.");
-		}
-		else if(RacingHandler.mode == RacingMode.NOT_STARTED) {
-			broadcast("이번 경기가 완전히 종료되었습니다. 다음 경기를 기다려주세요.");
-		}
-	}
-	private static void broadcast(String message) {
-		if(crossServer == null) return;
-		PlayerManager playerManager = crossServer.getPlayerManager();
+	public static void broadcast(String message) {
+		if(server == null) return;
+		PlayerManager playerManager = server.getPlayerManager();
 		Text text = Text.of(message);
 		playerManager.broadcast(text, false);
 	}
