@@ -1,25 +1,32 @@
 package me.cross;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
 import me.cross.custom.CustomBlock;
 import me.cross.custom.event.horse.HorseBondWithPlayerCallback;
 import me.cross.custom.event.race.RacingCallback;
 import me.cross.entity.HorseAbility;
 import me.cross.handler.*;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static net.minecraft.server.command.CommandManager.literal;
+
 public class Cross implements ModInitializer {
 	public static final String MOD_ID = "cross";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	private static MinecraftServer crossServer;
 	private static final long RACING_INTERVAL_SEC = 20, RUNNING_READY_SEC = 10, COUNTDOWN_SEC = 10, FINISHED_SEC = 60;
 	private static final Stopwatch stopwatchForNotStarted = new Stopwatch(RACING_INTERVAL_SEC, RacingMode.NOT_STARTED);
 	private static final Stopwatch stopwatchForRunningReady = new Stopwatch(RUNNING_READY_SEC, RacingMode.READY_FOR_RUNNING);
@@ -31,6 +38,7 @@ public class Cross implements ModInitializer {
 	public void onInitialize() {
 		registerEvents();
 		CustomBlock.registerCustomBlock();
+		registerModCommands();
 		CheckPointBlockHandler.initCheckPointBlockPosMap();
 		LOGGER.info("Hello Fabric world!");
 	}
@@ -54,18 +62,13 @@ public class Cross implements ModInitializer {
 		// server start, stop
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			LOGGER.info("server start");
-			stopwatchForNotStarted.start();
-			RacingHandler.init();
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			LOGGER.info("server stop");
-			// stop all stopwatches
-			stopAllStopwatches();
-			// stop all timers
-			RacingTimer.stop();
 		});
 		// for every tick
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
+			if(crossServer == null) crossServer = server;
 			// 중복 호출 방지
 			if(racingMode == RacingHandler.mode) return;
 			racingMode = RacingHandler.mode;
@@ -126,6 +129,36 @@ public class Cross implements ModInitializer {
 			return ActionResult.PASS;
 		});
 	}
+	private void registerModCommands() {
+		CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> {
+			registerFromDispatcher(dispatcher);
+		}));
+	}
+	private void registerFromDispatcher(CommandDispatcher<ServerCommandSource> dispatcher) {
+		// execute startMod
+		dispatcher.register(literal("startMod").executes(context -> {
+			startMod();
+			return Command.SINGLE_SUCCESS;
+		}));
+
+		// execute stopMod
+		dispatcher.register(literal("stopMod").executes(context -> {
+			stopMod();
+			return Command.SINGLE_SUCCESS;
+		}));
+	}
+	private static void startMod() {
+		LOGGER.info("startMod");
+		broadcast("경주가 시작됩니다. 출발선에 서주세요.");
+		stopwatchForNotStarted.start();
+		RacingHandler.init();
+	}
+	private static void stopMod() {
+		LOGGER.info("stopMod");
+		broadcast("경주가 완전히 종료되었습니다. 다음 경주를 기다려주세요.");
+		stopAllStopwatches();
+		RacingHandler.init();
+	}
 	private void addAbility(PlayerEntity player, AbstractHorseEntity horse) {
 		// map 에서 houseAbility 가 있으면 가져오고 없으면 생성
 		if(HorseOwnerHandler.containsHorseAbility(player.getUuid(), horse.getUuid())) {
@@ -143,25 +176,26 @@ public class Cross implements ModInitializer {
 	}
 	private void broadcastRacingEvent(MinecraftServer server) {
 		if(RacingHandler.mode == RacingMode.READY_FOR_RUNNING) {
-			broadcast("경주가 곧 시작됩니다. 출발선에 서주세요.", server);
+			broadcast("경주가 곧 시작됩니다. 출발선에 서주세요.");
 			// register all players
 			RacingHandler.addPlayers(server.getPlayerManager().getPlayerList());
 		}
 		else if(RacingHandler.mode == RacingMode.COUNTDOWN) {
-			broadcast("카운트다운 시작!", server);
+			broadcast("카운트다운 시작!");
 		}
 		else if(RacingHandler.mode == RacingMode.RUNNING) {
-			broadcast("경주 시작! 달리세요!!", server);
+			broadcast("경주 시작! 달리세요!!");
 		}
 		else if(RacingHandler.mode == RacingMode.FINISHED) {
-			broadcast("모두 도착했습니다. 경주가 종료되었습니다. 순위를 확인해보세요.", server);
+			broadcast("모두 도착했습니다. 경주가 종료되었습니다. 순위를 확인해보세요.");
 		}
 		else if(RacingHandler.mode == RacingMode.NOT_STARTED) {
-			broadcast("이번 경기가 완전히 종료되었습니다. 다음 경기를 기다려주세요.", server);
+			broadcast("이번 경기가 완전히 종료되었습니다. 다음 경기를 기다려주세요.");
 		}
 	}
-	private void broadcast(String message, MinecraftServer server) {
-		PlayerManager playerManager = server.getPlayerManager();
+	private static void broadcast(String message) {
+		if(crossServer == null) return;
+		PlayerManager playerManager = crossServer.getPlayerManager();
 		Text text = Text.of(message);
 		playerManager.broadcast(text, false);
 	}
