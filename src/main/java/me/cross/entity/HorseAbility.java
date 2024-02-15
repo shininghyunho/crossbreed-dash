@@ -69,7 +69,7 @@ public class HorseAbility {
 
     private String setName(String nbtName) {
         if(nbtName == null || nbtName.isEmpty()) {
-            name = HorseNameHandler.getHorseName(ownerUuid);
+            name = HorseNameHandler.getHorseName(horseUuid);
         } else {
             name = nbtName;
         }
