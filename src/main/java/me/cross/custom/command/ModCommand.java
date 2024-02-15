@@ -10,13 +10,13 @@ import static net.minecraft.server.command.CommandManager.literal;
 public final class ModCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         // execute startMod
-        dispatcher.register(literal("startMod").executes(context -> {
+        dispatcher.register(literal("start").executes(context -> {
             Cross.startMod();
             return Command.SINGLE_SUCCESS;
         }));
 
         // execute stopMod
-        dispatcher.register(literal("stopMod").executes(context -> {
+        dispatcher.register(literal("stop").executes(context -> {
             Cross.stopMod();
             return Command.SINGLE_SUCCESS;
         }));
