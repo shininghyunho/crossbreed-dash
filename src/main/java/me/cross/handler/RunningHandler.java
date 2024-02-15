@@ -5,10 +5,7 @@ import me.cross.custom.event.race.RacingCallback;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class RunningHandler {
     // 유저마다 체크포인트 지났는지 여부 체크
@@ -17,6 +14,7 @@ public class RunningHandler {
     // 체크포인트는 총 10개
     private static final int CHECKPOINT_COUNT = 10, LAP_COUNT = 1;
     private static int finishedPlayerCount = 0, rank = 1;
+    public static final int[] score = {10, 5, 3, 2, 1};
     private static final Map<UUID,boolean[]> playerCheckpointPassed = new HashMap<>();
     // 유저마다 체크포인트 idx
     private static final Map<UUID,Integer> playerCheckpointIdx = new HashMap<>();
@@ -84,7 +82,7 @@ public class RunningHandler {
         clearCheckpoint(uuid);
     }
 
-    public static String getResult() {
+    public static String getRaceResult() {
         StringBuilder sb = new StringBuilder();
         // 1등부터 순서대로 출력
         // 순위, 이름, 시간
@@ -95,9 +93,35 @@ public class RunningHandler {
                 });
         return sb.toString();
     }
+    public static String getTotalResult() {
+        StringBuilder sb=new StringBuilder();
+        // total 점수 출력, 이름, 점수
+        TotalScoreHandler.getTotalScoreMap().entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .forEach(entry -> sb.append(getPlayerName(entry.getKey())).append(" - ").append(entry.getValue()).append("점\n"));
+        return sb.toString();
+    }
     public static void setFinished() {
         RacingCallback.FINISHED.invoker().interact();
-        Cross.broadcast(getResult());
+        addTotalScore();
+        Cross.broadcast(getRaceResult());
+        // total 점수 반영
+    }
+    // 1등부터 순서대로 유저 반환
+    public static List<UUID> getRankingList() {
+        List<UUID> result = new ArrayList<>();
+        playerRank.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .forEach(entry -> result.add(entry.getKey()));
+        return result;
+    }
+    private static void addTotalScore() {
+        // 1등부터 순서대로 점수 반영
+        List<UUID> rankingList = getRankingList();
+        // for score
+        for(int i=0; i<score.length && i<rankingList.size(); i++) {
+            TotalScoreHandler.addTotalScore(rankingList.get(i), score[i]);
+        }
     }
     private static void checkAllPlayerFinished() {
         if(finishedPlayerCount >= playerLapCount.size()) setFinished();

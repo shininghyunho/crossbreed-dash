@@ -53,6 +53,8 @@ public class RacingHandler {
 
         StopwatchHandler.forFinished.stop();
         StopwatchHandler.forNotStarted.start();
+
+        Cross.broadcast(RunningHandler.getTotalResult());
     }
 
     public static void addPlayers(List<ServerPlayerEntity> players) {
