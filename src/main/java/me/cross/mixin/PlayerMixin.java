@@ -23,6 +23,9 @@ public abstract class PlayerMixin {
         HorseOwnerHandler.writeToNbt(nbt);
         CheckPointBlockHandler.writeToNbt(nbt);
         HorseNameHandler.writeToNbt(nbt);
+
+        // 안죽게 설정
+        setImmortal();
     }
 
     @Inject(at = @At("TAIL"), method = "readCustomDataFromNbt")
@@ -40,5 +43,11 @@ public abstract class PlayerMixin {
     private void dismountVehicle(CallbackInfo ci) {
         // 카운트 다운 or 레이싱 중일때 내리지 못함.
         if(RacingHandler.isCountdown() || RacingHandler.isRunning()) ci.cancel();
+    }
+
+    // 안죽게
+    private void setImmortal() {
+        PlayerEntity player = (PlayerEntity) (Object) this;
+        player.setInvulnerable(true);
     }
 }

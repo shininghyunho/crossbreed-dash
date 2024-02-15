@@ -25,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractHorseEntity.class)
 public abstract class HorseMixin extends Entity {
+    private static final double DEFAULT_SPEED=0.2d;
     public HorseMixin(EntityType<?> type, World world) {
         super(type, world);
     }
@@ -35,17 +36,15 @@ public abstract class HorseMixin extends Entity {
         HorseAbility horseAbility = getHorseAbility();
         // 말이 움직일 수 없는 상태라면 속도를 0으로 설정
         if(isHorseNotMoveable()) cir.setReturnValue(0.0F);
-        // 속도를 n배로 증가시킴
+        // 속도를 horseAbility.speedMultiplier 배로 증가시킴
         else if(horseAbility!=null) {
-            Cross.LOGGER.info("말 원래 속도 : " + cir.getReturnValue()+" , 증가 : " + horseAbility.speedMultiplier);
-            cir.setReturnValue((float) (cir.getReturnValue() * horseAbility.speedMultiplier));
+            cir.setReturnValue((float) ((float) DEFAULT_SPEED * horseAbility.speedMultiplier));
         }
     }
 
     // jump
     @ModifyVariable(at = @At("STORE"), method = "jump", ordinal = 0)
     private double getD(double original) {
-        AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
         // 주인이 없는 말이면 return
         if(!isHaveOwner()) return original;
 
@@ -71,6 +70,7 @@ public abstract class HorseMixin extends Entity {
             AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
             horse.bondWithPlayer(player);
             setHorseNameTag();
+            setImmortal();
         }
     }
 
@@ -146,5 +146,11 @@ public abstract class HorseMixin extends Entity {
     private boolean isHaveOwner() {
         AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
         return horse.getOwnerUuid() != null;
+    }
+
+    @Unique
+    private void setImmortal () {
+        AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
+        horse.setInvulnerable(true);
     }
 }
