@@ -1,5 +1,10 @@
 package me.cross.handler;
 
+import me.cross.Cross;
+import me.cross.custom.event.race.RacingCallback;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.Text;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,17 +85,30 @@ public class RunningHandler {
     }
 
     public static String getResult() {
-        return "경주 결과";
+        StringBuilder sb = new StringBuilder();
+        // 1등부터 순서대로 출력
+        // 순위, 이름, 시간
+        playerRank.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .forEach(entry -> {
+                    sb.append(entry.getValue()).append("등 : ").append(getPlayerName(entry.getKey())).append(" - ").append(playerTime.get(entry.getKey())).append("초\n");
+                });
+        return sb.toString();
     }
-
+    public static void setFinished() {
+        RacingCallback.FINISHED.invoker().interact();
+        Cross.broadcast(getResult());
+    }
     private static void checkAllPlayerFinished() {
-        if(finishedPlayerCount >= playerLapCount.size()) {
-            RacingHandler.finished();
-            // TODO : 러닝 결과 안내
-
-        }
+        if(finishedPlayerCount >= playerLapCount.size()) setFinished();
     }
 
+    private static String getPlayerName(UUID uuid) {
+        PlayerEntity player = Cross.server.getPlayerManager().getPlayer(uuid);
+        if(player == null) return "익명의 유저";
+        Text text= player.getName();
+        return text.getString();
+    }
     private static void addPlayerLapCount(UUID uuid) {
         if(!playerLapCount.containsKey(uuid)) return;
         playerLapCount.put(uuid, playerLapCount.get(uuid)+1);

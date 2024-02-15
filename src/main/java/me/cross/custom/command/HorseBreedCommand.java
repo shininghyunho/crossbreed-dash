@@ -33,7 +33,7 @@ public class HorseBreedCommand {
                                     return Command.SINGLE_SUCCESS;
                                 }))));
 
-        // 한글 저전
+        // 한글 버전
         dispatcher.register(literal("번식")
                 .then(argument("이름1", StringArgumentType.word())
                         .executes(context -> Command.SINGLE_SUCCESS)

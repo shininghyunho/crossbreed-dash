@@ -15,20 +15,14 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Objects;
 
 public class Cross implements ModInitializer {
 	public static final String MOD_ID = "cross";
@@ -109,7 +103,7 @@ public class Cross implements ModInitializer {
 			return ActionResult.PASS;
 		});
 
-		// Finished TODO : 아직 호출하는 곳이 없음
+		// Finished
 		RacingCallback.FINISHED.register(() -> {
 			LOGGER.info("경주 종료 이벤트");
 			RacingHandler.finished();
