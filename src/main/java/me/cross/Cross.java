@@ -1,13 +1,14 @@
 package me.cross;
 
 import me.cross.custom.CustomBlock;
+import me.cross.custom.command.HorseBreedCommand;
 import me.cross.custom.command.ModCommand;
 import me.cross.custom.event.horse.HorseBondWithPlayerCallback;
 import me.cross.custom.event.race.RacingCallback;
 import me.cross.custom.event.race.RacingCountdownTickCallback;
 import me.cross.entity.HorseAbility;
 import me.cross.handler.CheckPointBlockHandler;
-import me.cross.handler.HorseOwnerHandler;
+import me.cross.handler.HorseAbilityHandler;
 import me.cross.handler.RacingHandler;
 import me.cross.handler.StopwatchHandler;
 import net.fabricmc.api.ModInitializer;
@@ -32,7 +33,7 @@ public class Cross implements ModInitializer {
 	public void onInitialize() {
 		registerEvents();
 		CustomBlock.registerCustomBlock();
-		registerModCommands();
+		registerCustomCommands();
 		CheckPointBlockHandler.initCheckPointBlockPosMap();
 		LOGGER.info("Hello Fabric world!");
 	}
@@ -122,10 +123,14 @@ public class Cross implements ModInitializer {
 			return ActionResult.PASS;
 		});
 	}
-	private void registerModCommands() {
+	private void registerCustomCommands() {
 		CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> {
 			ModCommand.register(dispatcher);
 		}));
+
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+			HorseBreedCommand.register(dispatcher);
+		});
 	}
 	private static void setModStart() {
 		StopwatchHandler.forNotStarted.start();
@@ -137,7 +142,18 @@ public class Cross implements ModInitializer {
 	}
 	private void addAbilityIfNotPresent(PlayerEntity player, AbstractHorseEntity horse) {
 		// map 에서 houseAbility 가 있으면 가져오고 없으면 생성
-		HorseAbility horseAbility = HorseOwnerHandler.getHorseAbility(player.getUuid(), horse.getUuid());
+		HorseAbility horseAbility = HorseAbilityHandler.getOrAddHorseAbility(player.getUuid(), horse.getUuid());
 		Cross.LOGGER.info("말 능력치 : " + horseAbility);
 	}
+
+	/*public static void summonHorse() {
+		try {
+			ServerWorld world = server.getWorld(World.OVERWORLD);
+			AbstractHorseEntity horse = EntityType.HORSE.create(world);
+			Objects.requireNonNull(horse).setPos(0, 100, 0);
+			Objects.requireNonNull(world).spawnEntity(horse);
+		} catch (Exception e) {
+			Cross.LOGGER.error("말 소환 중 오류 발생", e);
+		}
+	}*/
 }

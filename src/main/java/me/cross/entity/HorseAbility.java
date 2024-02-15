@@ -9,7 +9,6 @@ import java.util.UUID;
 public class HorseAbility {
     public UUID ownerUuid;
     public UUID horseUuid;
-    public int level;
     public double speedMultiplier;
     public double jumpMultiplier;
     public double healthMultiplier;
@@ -22,14 +21,13 @@ public class HorseAbility {
     public HorseAbility(UUID ownerUuid, UUID horseUuid) {
         this.ownerUuid = ownerUuid;
         this.horseUuid = horseUuid;
-        // set default value
-        level = 1;
-        setLevelOneRandomly();
+
+        setStatRandomly();
         // set random name
         name = HorseNameHandler.getHorseName(horseUuid);
     }
 
-    private void setLevelOneRandomly() {
+    private void setStatRandomly() {
         // 0<speedMultiplier<1
         speedMultiplier = random.nextFloat();
         // 0<jumpMultiplier<1
@@ -44,7 +42,6 @@ public class HorseAbility {
     public String toString() {
         return "HorseAbility{" +
                 "name='" + name +
-                ",level=" + level +
                 ", speedMultiplier=" + speedMultiplier +
                 ", jumpMultiplier=" + jumpMultiplier +
                 ", healthMultiplier=" + healthMultiplier +
@@ -53,7 +50,6 @@ public class HorseAbility {
     }
 
     public void writeToNbt(NbtCompound horseAbilityNbt) {
-        horseAbilityNbt.putInt("Level", level);
         horseAbilityNbt.putDouble("SpeedMultiplier", speedMultiplier);
         horseAbilityNbt.putDouble("JumpMultiplier", jumpMultiplier);
         horseAbilityNbt.putDouble("HealthMultiplier", healthMultiplier);
@@ -62,7 +58,6 @@ public class HorseAbility {
     }
 
     public void readFromNbt(NbtCompound horseAbilityNbt) {
-        level = horseAbilityNbt.getInt("Level");
         speedMultiplier = horseAbilityNbt.getFloat("SpeedMultiplier");
         jumpMultiplier = horseAbilityNbt.getFloat("JumpMultiplier");
         healthMultiplier = horseAbilityNbt.getFloat("HealthMultiplier");

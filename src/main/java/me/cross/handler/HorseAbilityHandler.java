@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class HorseOwnerHandler {
+public class HorseAbilityHandler {
     private static final String HORSE_ABILITIES_MAP_KEY = "HorseAbilitiesMap";
     public static final Map<UUID,Map<UUID, @NotNull HorseAbility>> horseAbilitiesMap = new HashMap<>();
 
@@ -25,13 +25,24 @@ public class HorseOwnerHandler {
         }
     }
 
-    public static @NotNull HorseAbility getHorseAbility(@NotNull UUID playerUUID,@NotNull UUID horseUUID) {
+    public static @NotNull HorseAbility getOrAddHorseAbility(@NotNull UUID playerUUID, @NotNull UUID horseUUID) {
         if(isHorseAbilityExist(playerUUID, horseUUID)) return horseAbilitiesMap.get(playerUUID).get(horseUUID);
 
         Cross.LOGGER.info("HorseAbility 없으므로 새로 생성합니다.");
         HorseAbility newHorseAbility = new HorseAbility(playerUUID, horseUUID);
         addHorseAbility(playerUUID, horseUUID, newHorseAbility);
         return newHorseAbility;
+    }
+
+    public static HorseAbility getHorseAbility(String horseName) {
+        for(UUID playerUUID : horseAbilitiesMap.keySet()) {
+            for(UUID horseUUID : horseAbilitiesMap.get(playerUUID).keySet()) {
+                if(horseAbilitiesMap.get(playerUUID).get(horseUUID).name.equals(horseName)) {
+                    return horseAbilitiesMap.get(playerUUID).get(horseUUID);
+                }
+            }
+        }
+        return null;
     }
 
     // isHorseAbilityExist
@@ -76,7 +87,7 @@ public class HorseOwnerHandler {
                 HorseAbility horseAbility = new HorseAbility(playerUUID, horseUUID);
                 horseAbility.readFromNbt(horseAbilityNbt);
 
-                HorseOwnerHandler.addHorseAbility(playerUUID, horseUUID, horseAbility);
+                HorseAbilityHandler.addHorseAbility(playerUUID, horseUUID, horseAbility);
             }
         }
     }

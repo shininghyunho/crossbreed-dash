@@ -4,7 +4,7 @@ import me.cross.Cross;
 import me.cross.custom.event.horse.HorseBondWithPlayerCallback;
 import me.cross.entity.HorseAbility;
 import me.cross.handler.CheckPointBlockHandler;
-import me.cross.handler.HorseOwnerHandler;
+import me.cross.handler.HorseAbilityHandler;
 import me.cross.handler.RacingHandler;
 import me.cross.handler.RunningHandler;
 import net.minecraft.entity.Entity;
@@ -119,7 +119,7 @@ public abstract class HorseMixin extends Entity {
     private HorseAbility getHorseAbility() {
         AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
         if(horse.getOwnerUuid() == null) return null;
-        return HorseOwnerHandler.getHorseAbility(horse.getOwnerUuid(), getUuid());
+        return HorseAbilityHandler.getOrAddHorseAbility(horse.getOwnerUuid(), getUuid());
     }
 
     @Unique
