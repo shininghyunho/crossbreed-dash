@@ -33,20 +33,22 @@ public class HorseBreedCommand {
                                     return Command.SINGLE_SUCCESS;
                                 }))));
 
-        /*dispatcher.register(literal("breed")
-                .then(argument("name1", StringArgumentType.string()))
-                .then(argument("name2", StringArgumentType.string()))
-                .executes(context -> {
-                    // get parameters
-                    String horseName1 = StringArgumentType.getString(context, "name1");
-                    String horseName2 = StringArgumentType.getString(context, "name2");
+        // 한글 저전
+        dispatcher.register(literal("번식")
+                .then(argument("이름1", StringArgumentType.word())
+                        .executes(context -> Command.SINGLE_SUCCESS)
+                        .then(argument("이름2", StringArgumentType.word())
+                                .executes(context -> {
+                                    // get parameters
+                                    String horseName1 = StringArgumentType.getString(context, "이름1");
+                                    String horseName2 = StringArgumentType.getString(context, "이름2");
 
-                    ServerCommandSource source = context.getSource();
-                    ServerPlayerEntity player = source.getPlayer();
-                    UUID playerUUID = Objects.requireNonNull(player).getUuid();
+                                    ServerCommandSource source = (ServerCommandSource) context.getSource();
+                                    ServerPlayerEntity player = source.getPlayer();
+                                    UUID playerUUID = Objects.requireNonNull(player).getUuid();
 
-                    HorseSummonHandler.summonBreedHorse(horseName1, horseName2, playerUUID);
-                    return Command.SINGLE_SUCCESS;
-                }));*/
+                                    HorseSummonHandler.summonBreedHorse(horseName1, horseName2, playerUUID);
+                                    return Command.SINGLE_SUCCESS;
+                                }))));
     }
 }
