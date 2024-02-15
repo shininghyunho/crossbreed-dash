@@ -1,6 +1,9 @@
 package me.cross.handler;
 
 import me.cross.Cross;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.*;
@@ -55,6 +58,9 @@ public class RacingHandler {
         StopwatchHandler.forNotStarted.start();
 
         Cross.broadcast(RunningHandler.getTotalResult());
+
+        // 전체 참가자들에게 말 알을 인벤토리에 추가
+        addHorseEggItemToAllPlayers();
     }
 
     public static void addPlayers(List<ServerPlayerEntity> players) {
@@ -72,5 +78,13 @@ public class RacingHandler {
     }
     public static void init() {
         mode = RacingMode.NOT_STARTED;
+    }
+    private static void addHorseEggItemToAllPlayers() {
+        // 모든 플레이어에게 말 알을 인벤토리에 추가
+        Cross.server.getPlayerManager().getPlayerList().forEach(player -> {
+            Item item = Items.HORSE_SPAWN_EGG;
+            // player 인벤토리에 추가
+            player.giveItemStack(new ItemStack(item));
+        });
     }
 }
