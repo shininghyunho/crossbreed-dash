@@ -1,17 +1,19 @@
 package me.cross.handler;
 
 import me.cross.Cross;
-import me.cross.entity.HorseAbility;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.AbstractHorseEntity;
+import net.minecraft.entity.passive.HorseColor;
+import net.minecraft.entity.passive.HorseEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.Objects;
+import java.util.Random;
 import java.util.UUID;
 
 public class HorseSummonHandler {
-
+    private static final Random random = new Random();
 
     public static void summonBreedHorse(String horseName1, String horseName2, UUID playerUUID) {
         // HorseBreederHandler 에게서 소환할 말의 ability, pos 를 전달받아서 소환
@@ -21,7 +23,13 @@ public class HorseSummonHandler {
 
     public static AbstractHorseEntity summonHorse(BlockPos pos) {
         // 소환 실패하면 null 반환
-        AbstractHorseEntity horse = EntityType.HORSE.create(Cross.server.getWorld(World.OVERWORLD));
+        HorseEntity horse = EntityType.HORSE.create(Cross.server.getWorld(World.OVERWORLD));
+
+        // 랜덤 색상
+        if(horse != null) {
+            horse.setVariant(HorseColor.byId(random.nextInt(7)));
+        }
+
         if(horse == null) return null;
         horse.refreshPositionAndAngles(pos, 0.0F, 0.0F);
         try {
