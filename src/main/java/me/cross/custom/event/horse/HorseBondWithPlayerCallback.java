@@ -10,13 +10,9 @@ public interface HorseBondWithPlayerCallback {
     Event<HorseBondWithPlayerCallback> EVENT = EventFactory.createArrayBacked(HorseBondWithPlayerCallback.class,
             (listeners) -> (player, horse) -> {
                 for (HorseBondWithPlayerCallback listener : listeners) {
-                    ActionResult result = listener.interact(player, horse);
-                    if (result != ActionResult.PASS) {
-                        return result;
-                    }
+                    listener.interact(player, horse);
                 }
-                return ActionResult.PASS;
             });
 
-    ActionResult interact(PlayerEntity player, AbstractHorseEntity horse);
+    void interact(PlayerEntity player, AbstractHorseEntity horse);
 }

@@ -34,7 +34,7 @@ public class HorseNameHandler {
         String adjective = ADJECTIVES.get(adjectiveIndex);
         String noun = NOUNS.get(nounIndex);
 
-        return adjective + " " + noun;
+        return adjective + "_" + noun;
     }
 
     // write to nbt

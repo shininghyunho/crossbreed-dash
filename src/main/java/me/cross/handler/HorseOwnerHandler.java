@@ -1,7 +1,9 @@
 package me.cross.handler;
 
+import me.cross.Cross;
 import me.cross.entity.HorseAbility;
 import net.minecraft.nbt.NbtCompound;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,9 +11,11 @@ import java.util.UUID;
 
 public class HorseOwnerHandler {
     private static final String HORSE_ABILITIES_MAP_KEY = "HorseAbilitiesMap";
-    public static final Map<UUID,Map<UUID, HorseAbility>> horseAbilitiesMap = new HashMap<>();
+    public static final Map<UUID,Map<UUID, @NotNull HorseAbility>> horseAbilitiesMap = new HashMap<>();
 
     public static void addHorseAbility(UUID playerUUID, UUID horseUUID, HorseAbility horseAbility) {
+        if(playerUUID == null || horseUUID == null || horseAbility == null) return;
+
         if(horseAbilitiesMap.containsKey(playerUUID)) {
             horseAbilitiesMap.get(playerUUID).put(horseUUID, horseAbility);
         } else {
@@ -21,18 +25,18 @@ public class HorseOwnerHandler {
         }
     }
 
-    public static HorseAbility getHorseAbility(UUID playerUUID, UUID horseUUID) {
-        if(horseAbilitiesMap.containsKey(playerUUID)) {
-            return horseAbilitiesMap.get(playerUUID).get(horseUUID);
-        }
-        return null;
+    public static @NotNull HorseAbility getHorseAbility(@NotNull UUID playerUUID,@NotNull UUID horseUUID) {
+        if(isHorseAbilityExist(playerUUID, horseUUID)) return horseAbilitiesMap.get(playerUUID).get(horseUUID);
+
+        Cross.LOGGER.info("HorseAbility 없으므로 새로 생성합니다.");
+        HorseAbility newHorseAbility = new HorseAbility(playerUUID, horseUUID);
+        addHorseAbility(playerUUID, horseUUID, newHorseAbility);
+        return newHorseAbility;
     }
 
-    public static boolean containsHorseAbility(UUID playerUUID, UUID horseUUID) {
-        if(horseAbilitiesMap.containsKey(playerUUID)) {
-            return horseAbilitiesMap.get(playerUUID).containsKey(horseUUID);
-        }
-        return false;
+    // isHorseAbilityExist
+    public static boolean isHorseAbilityExist(UUID playerUUID, UUID horseUUID) {
+        return horseAbilitiesMap.containsKey(playerUUID) && horseAbilitiesMap.get(playerUUID).containsKey(horseUUID);
     }
 
     public static void writeToNbt(NbtCompound nbt) {

@@ -10,12 +10,12 @@ public class HorseAbility {
     public UUID ownerUuid;
     public UUID horseUuid;
     public int level;
-    public float speedMultiplier;
-    public float jumpMultiplier;
-    public float healthMultiplier;
+    public double speedMultiplier;
+    public double jumpMultiplier;
+    public double healthMultiplier;
     // 말이 변덕이 있어서 갑자기 멈춤
-    public float crazyFactor;
-    public String name = "";
+    public double crazyFactor;
+    public String name;
 
     private static final Random random = new Random();
 
@@ -25,6 +25,8 @@ public class HorseAbility {
         // set default value
         level = 1;
         setLevelOneRandomly();
+        // set random name
+        name = HorseNameHandler.getHorseName(horseUuid);
     }
 
     private void setLevelOneRandomly() {
@@ -41,7 +43,8 @@ public class HorseAbility {
     @Override
     public String toString() {
         return "HorseAbility{" +
-                "level=" + level +
+                "name='" + name +
+                ",level=" + level +
                 ", speedMultiplier=" + speedMultiplier +
                 ", jumpMultiplier=" + jumpMultiplier +
                 ", healthMultiplier=" + healthMultiplier +
@@ -51,10 +54,10 @@ public class HorseAbility {
 
     public void writeToNbt(NbtCompound horseAbilityNbt) {
         horseAbilityNbt.putInt("Level", level);
-        horseAbilityNbt.putFloat("SpeedMultiplier", speedMultiplier);
-        horseAbilityNbt.putFloat("JumpMultiplier", jumpMultiplier);
-        horseAbilityNbt.putFloat("HealthMultiplier", healthMultiplier);
-        horseAbilityNbt.putFloat("CrazyFactor", crazyFactor);
+        horseAbilityNbt.putDouble("SpeedMultiplier", speedMultiplier);
+        horseAbilityNbt.putDouble("JumpMultiplier", jumpMultiplier);
+        horseAbilityNbt.putDouble("HealthMultiplier", healthMultiplier);
+        horseAbilityNbt.putDouble("CrazyFactor", crazyFactor);
         horseAbilityNbt.putString("Name", name);
     }
 

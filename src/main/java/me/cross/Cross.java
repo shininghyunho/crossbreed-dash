@@ -6,7 +6,10 @@ import me.cross.custom.event.horse.HorseBondWithPlayerCallback;
 import me.cross.custom.event.race.RacingCallback;
 import me.cross.custom.event.race.RacingCountdownTickCallback;
 import me.cross.entity.HorseAbility;
-import me.cross.handler.*;
+import me.cross.handler.CheckPointBlockHandler;
+import me.cross.handler.HorseOwnerHandler;
+import me.cross.handler.RacingHandler;
+import me.cross.handler.StopwatchHandler;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -60,8 +63,8 @@ public class Cross implements ModInitializer {
 		// HorseBondWithPlayerCallback.EVENT.register
 		HorseBondWithPlayerCallback.EVENT.register((player, horse) -> {
 			LOGGER.info("말과 상호작용 이벤트 발생");
-			addAbility(player, horse);
-			return ActionResult.PASS;
+			// 말 능력치가 없다면 생성
+			addAbilityIfNotPresent(player, horse);
 		});
 	}
 	private void registerServerEvents() {
@@ -132,19 +135,9 @@ public class Cross implements ModInitializer {
 		StopwatchHandler.stopAll();
 		RacingHandler.init();
 	}
-	private void addAbility(PlayerEntity player, AbstractHorseEntity horse) {
+	private void addAbilityIfNotPresent(PlayerEntity player, AbstractHorseEntity horse) {
 		// map 에서 houseAbility 가 있으면 가져오고 없으면 생성
-		if(HorseOwnerHandler.containsHorseAbility(player.getUuid(), horse.getUuid())) {
-			Cross.LOGGER.info("horseAbility is already exist");
-			HorseAbility horseAbility = HorseOwnerHandler.getHorseAbility(player.getUuid(), horse.getUuid());
-
-			if(horseAbility!=null) Cross.LOGGER.info("horseAbility : " + horseAbility);
-		} else {
-			Cross.LOGGER.info("horseAbility is not exist so create new one");
-			HorseAbility horseAbility = new HorseAbility(player.getUuid(), horse.getUuid());
-			HorseOwnerHandler.addHorseAbility(player.getUuid(), horse.getUuid(), horseAbility);
-
-			Cross.LOGGER.info("horseAbility : " + horseAbility);
-		}
+		HorseAbility horseAbility = HorseOwnerHandler.getHorseAbility(player.getUuid(), horse.getUuid());
+		Cross.LOGGER.info("말 능력치 : " + horseAbility);
 	}
 }

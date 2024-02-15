@@ -1,9 +1,12 @@
 package me.cross.mixin;
 
 import me.cross.Cross;
-import me.cross.entity.HorseAbility;
-import me.cross.handler.*;
 import me.cross.custom.event.horse.HorseBondWithPlayerCallback;
+import me.cross.entity.HorseAbility;
+import me.cross.handler.CheckPointBlockHandler;
+import me.cross.handler.HorseOwnerHandler;
+import me.cross.handler.RacingHandler;
+import me.cross.handler.RunningHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.AbstractHorseEntity;
@@ -11,7 +14,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -27,22 +29,29 @@ public abstract class HorseMixin extends Entity {
         super(type, world);
     }
 
-    @Unique private HorseAbility horseAbility;
-
     // getSaddledSpeed : 말에 탑승하면 tick 당 호출됨
     @Inject(at = @At("TAIL"), method = "getSaddledSpeed", cancellable = true)
     private void getSaddledSpeed(PlayerEntity controllingPlayer,CallbackInfoReturnable<Float> cir) {
+        HorseAbility horseAbility = getHorseAbility();
         // 말이 움직일 수 없는 상태라면 속도를 0으로 설정
         if(isHorseNotMoveable()) cir.setReturnValue(0.0F);
         // 속도를 n배로 증가시킴
-        else if(horseAbility!=null) cir.setReturnValue(cir.getReturnValueF() * horseAbility.speedMultiplier);
+        else if(horseAbility!=null) {
+            Cross.LOGGER.info("말 원래 속도 : " + cir.getReturnValue()+" , 증가 : " + horseAbility.speedMultiplier);
+            cir.setReturnValue((float) (cir.getReturnValue() * horseAbility.speedMultiplier));
+        }
     }
 
     // jump
     @ModifyVariable(at = @At("STORE"), method = "jump", ordinal = 0)
     private double getD(double original) {
+        AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
+        // 주인이 없는 말이면 return
+        if(!isHaveOwner()) return original;
+
         // 점프력을 n배로 증가시킴
-        return horseAbility!=null ? original * horseAbility.jumpMultiplier : original;
+        HorseAbility horseAbility = getHorseAbility();
+        return horseAbility==null? original : original * horseAbility.jumpMultiplier;
     }
 
     // isTame
@@ -53,31 +62,27 @@ public abstract class HorseMixin extends Entity {
     }
 
     // putPlayerOnBack
-    @Inject(at = @At("TAIL"), method = "putPlayerOnBack", cancellable = true)
+    @Inject(at = @At("TAIL"), method = "putPlayerOnBack")
     private void putPlayerOnBack(PlayerEntity player, CallbackInfo ci) {
-        if(getWorld().isClient) return;
+        // add horse ability event
+        HorseBondWithPlayerCallback.EVENT.invoker().interact(player, (AbstractHorseEntity) (Object) this);
 
-        ActionResult result = HorseBondWithPlayerCallback.EVENT.invoker().interact(player, (AbstractHorseEntity) (Object) this);
-        if(result != ActionResult.PASS) {
-            ci.cancel();
-        }
-
-        // set horseAbility
-        if(horseAbility==null) {
-            horseAbility = HorseOwnerHandler.getHorseAbility(player.getUuid(), getUuid());
+        if(!isHaveOwner()) {
+            AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
+            horse.bondWithPlayer(player);
             setHorseNameTag();
         }
     }
 
-    // canJump
-
     @Inject(at = @At("TAIL"), method = "canJump", cancellable = true)
     private void canJump(CallbackInfoReturnable<Boolean> cir) {
+        // 주인이 없는 말이면 return
+        if(!isHaveOwner()) return;
+
         // 말이 점프할 수 없는 상태라면 점프를 막음
         if(isHorseNotMoveable()) cir.setReturnValue(false);
     }
     // isSaddled
-
     @Inject(at = @At("TAIL"), method = "isSaddled", cancellable = true)
     private void isSaddled(CallbackInfoReturnable<Boolean> cir) {
         // 말이 항상 안장을 타고 있는 상태로 설정
@@ -88,7 +93,7 @@ public abstract class HorseMixin extends Entity {
     @Inject(at = @At("TAIL"), method = "tick")
     private void tick(CallbackInfo ci) {
         // 러닝 모드일때 체크포인트 지나갔는지 확인
-        if(RacingHandler.isRunning()) {
+        if(RacingHandler.isRunning() && !getWorld().isClient && !isHaveOwner()) {
             int x = (int) getX(), z = (int) getZ(), idx = RunningHandler.getCheckpointIdx(getUuid());
             if(idx==-1) return;
 
@@ -103,21 +108,43 @@ public abstract class HorseMixin extends Entity {
             }
         }
     }
+
     @Unique
     private boolean isHorseNotMoveable() {
         int x = (int) getX(), z = (int) getZ();
         return (RacingHandler.isReadyForRunning() || RacingHandler.isCountdown()) && CheckPointBlockHandler.isPlayerAtIdxPoint(x,z,0);
     }
+    
+    @Unique
+    private HorseAbility getHorseAbility() {
+        AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
+        if(horse.getOwnerUuid() == null) return null;
+        return HorseOwnerHandler.getHorseAbility(horse.getOwnerUuid(), getUuid());
+    }
 
     @Unique
     private void setHorseNameTag() {
         AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
-        // set name tag
+        if(horse.getOwnerUuid() == null) return;
+
+        // get horse name
+        HorseAbility horseAbility = getHorseAbility();
+        if(horseAbility == null) return;
+        String horseName = horseAbility.name;
+
+        // add to name tag
         ItemStack nameTagStack = new ItemStack(Items.NAME_TAG);
-        String horseName = HorseNameHandler.getHorseName(horse.getUuid());
         nameTagStack.setCustomName(Text.of(horseName));
+
+        // add name tag to horse
         horse.setCustomName(nameTagStack.getName());
-        horseAbility.name = horseName;
+
         Cross.LOGGER.info("말 이름 태그 설정 : " + horseAbility.name);
+    }
+
+    @Unique
+    private boolean isHaveOwner() {
+        AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
+        return horse.getOwnerUuid() != null;
     }
 }
