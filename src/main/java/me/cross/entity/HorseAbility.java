@@ -1,5 +1,6 @@
 package me.cross.entity;
 
+import me.cross.handler.HorseNameHandler;
 import net.minecraft.nbt.NbtCompound;
 
 import java.util.Random;
@@ -14,6 +15,7 @@ public class HorseAbility {
     public float healthMultiplier;
     // 말이 변덕이 있어서 갑자기 멈춤
     public float crazyFactor;
+    public String name = "";
 
     private static final Random random = new Random();
 
@@ -53,6 +55,7 @@ public class HorseAbility {
         horseAbilityNbt.putFloat("JumpMultiplier", jumpMultiplier);
         horseAbilityNbt.putFloat("HealthMultiplier", healthMultiplier);
         horseAbilityNbt.putFloat("CrazyFactor", crazyFactor);
+        horseAbilityNbt.putString("Name", name);
     }
 
     public void readFromNbt(NbtCompound horseAbilityNbt) {
@@ -61,5 +64,15 @@ public class HorseAbility {
         jumpMultiplier = horseAbilityNbt.getFloat("JumpMultiplier");
         healthMultiplier = horseAbilityNbt.getFloat("HealthMultiplier");
         crazyFactor = horseAbilityNbt.getFloat("CrazyFactor");
+        name = setName(horseAbilityNbt.getString("Name"));
+    }
+
+    private String setName(String nbtName) {
+        if(nbtName == null || nbtName.isEmpty()) {
+            name = HorseNameHandler.getHorseName(ownerUuid);
+        } else {
+            name = nbtName;
+        }
+        return name;
     }
 }

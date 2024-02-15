@@ -1,15 +1,16 @@
 package me.cross.mixin;
 
+import me.cross.Cross;
 import me.cross.entity.HorseAbility;
-import me.cross.handler.CheckPointBlockHandler;
-import me.cross.handler.HorseOwnerHandler;
+import me.cross.handler.*;
 import me.cross.custom.event.horse.HorseBondWithPlayerCallback;
-import me.cross.handler.RacingHandler;
-import me.cross.handler.RunningHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -54,30 +55,36 @@ public abstract class HorseMixin extends Entity {
     // putPlayerOnBack
     @Inject(at = @At("TAIL"), method = "putPlayerOnBack", cancellable = true)
     private void putPlayerOnBack(PlayerEntity player, CallbackInfo ci) {
+        if(getWorld().isClient) return;
+
         ActionResult result = HorseBondWithPlayerCallback.EVENT.invoker().interact(player, (AbstractHorseEntity) (Object) this);
         if(result != ActionResult.PASS) {
             ci.cancel();
         }
 
         // set horseAbility
-        if(horseAbility==null) horseAbility = HorseOwnerHandler.getHorseAbility(player.getUuid(), getUuid());
+        if(horseAbility==null) {
+            horseAbility = HorseOwnerHandler.getHorseAbility(player.getUuid(), getUuid());
+            setHorseNameTag();
+        }
     }
 
     // canJump
+
     @Inject(at = @At("TAIL"), method = "canJump", cancellable = true)
     private void canJump(CallbackInfoReturnable<Boolean> cir) {
         // 말이 점프할 수 없는 상태라면 점프를 막음
         if(isHorseNotMoveable()) cir.setReturnValue(false);
     }
-
     // isSaddled
+
     @Inject(at = @At("TAIL"), method = "isSaddled", cancellable = true)
     private void isSaddled(CallbackInfoReturnable<Boolean> cir) {
         // 말이 항상 안장을 타고 있는 상태로 설정
         cir.setReturnValue(true);
     }
-
     // every tick
+
     @Inject(at = @At("TAIL"), method = "tick")
     private void tick(CallbackInfo ci) {
         // 러닝 모드일때 체크포인트 지나갔는지 확인
@@ -96,10 +103,21 @@ public abstract class HorseMixin extends Entity {
             }
         }
     }
-
     @Unique
     private boolean isHorseNotMoveable() {
         int x = (int) getX(), z = (int) getZ();
         return (RacingHandler.isReadyForRunning() || RacingHandler.isCountdown()) && CheckPointBlockHandler.isPlayerAtIdxPoint(x,z,0);
+    }
+
+    @Unique
+    private void setHorseNameTag() {
+        AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
+        // set name tag
+        ItemStack nameTagStack = new ItemStack(Items.NAME_TAG);
+        String horseName = HorseNameHandler.getHorseName(horse.getUuid());
+        nameTagStack.setCustomName(Text.of(horseName));
+        horse.setCustomName(nameTagStack.getName());
+        horseAbility.name = horseName;
+        Cross.LOGGER.info("말 이름 태그 설정 : " + horseAbility.name);
     }
 }
