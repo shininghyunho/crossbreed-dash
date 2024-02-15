@@ -34,8 +34,8 @@ public class HorseAbilityHandler {
         return newHorseAbility;
     }
 
-    public static HorseAbility getHorseAbility(String horseName) {
-        for(UUID playerUUID : horseAbilitiesMap.keySet()) {
+    public static HorseAbility getHorseAbility(UUID playerUUID, String horseName) {
+        if(horseAbilitiesMap.containsKey(playerUUID)) {
             for(UUID horseUUID : horseAbilitiesMap.get(playerUUID).keySet()) {
                 if(horseAbilitiesMap.get(playerUUID).get(horseUUID).name.equals(horseName)) {
                     return horseAbilitiesMap.get(playerUUID).get(horseUUID);

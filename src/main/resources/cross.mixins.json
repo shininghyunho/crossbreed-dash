@@ -5,8 +5,7 @@
   "mixins": [
     "BlockMixin",
     "HorseMixin",
-    "PlayerMixin",
-    "ServerWorldMixin"
+    "PlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
