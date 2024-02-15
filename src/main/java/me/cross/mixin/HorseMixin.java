@@ -25,7 +25,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractHorseEntity.class)
 public abstract class HorseMixin extends Entity {
+    private static final int MAX_CRAZY_COUNT = 60;
     private static final double DEFAULT_SPEED=0.2d;
+    private static int crazyCount = 0;
     public HorseMixin(EntityType<?> type, World world) {
         super(type, world);
     }
@@ -36,6 +38,15 @@ public abstract class HorseMixin extends Entity {
         HorseAbility horseAbility = getHorseAbility();
         // 말이 움직일 수 없는 상태라면 속도를 0으로 설정
         if(isHorseNotMoveable()) cir.setReturnValue(0.0F);
+        // crazy count > 0 이면 속도를 0으로 설정
+        else if(crazyCount > 0) {
+            cir.setReturnValue(0.0F);
+            crazyCount--;
+        }
+        else if(isHorseCrazy()) {
+            setRandCrazyCount();
+            Cross.LOGGER.info("말이 미친 상태입니다 ㅋㅋ 말 이름 : " + horseAbility.name);
+        }
         // 속도를 horseAbility.speedMultiplier 배로 증가시킴
         else if(horseAbility!=null) {
             cir.setReturnValue((float) ((float) DEFAULT_SPEED * horseAbility.speedMultiplier));
@@ -152,5 +163,18 @@ public abstract class HorseMixin extends Entity {
     private void setImmortal () {
         AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
         horse.setInvulnerable(true);
+    }
+
+    // 미친 정도에 따라 멈출지 여부
+    @Unique
+    private boolean isHorseCrazy() {
+        HorseAbility horseAbility = getHorseAbility();
+        return horseAbility != null && horseAbility.crazyFactor > Math.random();
+    }
+
+
+    @Unique
+    private void setRandCrazyCount() {
+        crazyCount = (int) (Math.random() * MAX_CRAZY_COUNT);
     }
 }
