@@ -84,6 +84,7 @@ public class RunningHandler {
 
     public static String getRaceResult() {
         StringBuilder sb = new StringBuilder();
+        sb.append("경주 결과 확인\n");
         // 1등부터 순서대로 출력
         // 순위, 이름, 시간
         playerRank.entrySet().stream()
@@ -95,6 +96,7 @@ public class RunningHandler {
     }
     public static String getTotalResult() {
         StringBuilder sb=new StringBuilder();
+        sb.append("전체 점수판 확인\n");
         // total 점수 출력, 이름, 점수
         TotalScoreHandler.getTotalScoreMap().entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
