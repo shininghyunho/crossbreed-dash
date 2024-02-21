@@ -3,6 +3,7 @@ package me.cross.custom.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import me.cross.Cross;
+import me.cross.handler.MessageHandler;
 import me.cross.handler.RunningHandler;
 import net.minecraft.server.command.ServerCommandSource;
 
@@ -24,7 +25,7 @@ public final class ModCommand {
 
         // get result
         dispatcher.register(literal("result").executes(context -> {
-            Cross.broadcast(RunningHandler.getTotalResult());
+            MessageHandler.broadcast(RunningHandler.getTotalResult());
             return Command.SINGLE_SUCCESS;
         }));
     }

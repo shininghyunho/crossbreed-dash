@@ -7,10 +7,7 @@ import me.cross.custom.event.horse.HorseBondWithPlayerCallback;
 import me.cross.custom.event.race.RacingCallback;
 import me.cross.custom.event.race.RacingCountdownTickCallback;
 import me.cross.entity.HorseAbility;
-import me.cross.handler.CheckPointBlockHandler;
-import me.cross.handler.HorseAbilityHandler;
-import me.cross.handler.RacingHandler;
-import me.cross.handler.StopwatchHandler;
+import me.cross.handler.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -19,8 +16,10 @@ import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,19 +38,14 @@ public class Cross implements ModInitializer {
 	}
 
 	public static void startMod() {
-		LOGGER.info("startMod");
-		broadcast("경주가 시작됩니다. 출발선에 서주세요.");
+		LOGGER.info("start mod");
+		MessageHandler.broadcastWithRed("모드가 시작되었습니다.",true);
 		setModStart();
 	}
 	public static void stopMod() {
-		LOGGER.info("stopMod");
-		broadcast("경주가 완전히 종료되었습니다. 다음 경주를 기다려주세요.");
+		LOGGER.info("stop mod");
+		MessageHandler.broadcastWithRed("모드가 종료되었습니다.",true);
 		setModStop();
-	}
-	public static void broadcast(String message) {
-		if(server == null) return;
-		PlayerManager playerManager = server.getPlayerManager();
-		playerManager.broadcast(Text.of(message), false);
 	}
 
 	//  Private Methods
@@ -119,7 +113,7 @@ public class Cross implements ModInitializer {
 
 		// 카운트다운 틱
 		RacingCountdownTickCallback.COUNTDOWN_TICK.register((nowTime) -> {
-			broadcast("카운트다운 : " + nowTime + "초");
+			MessageHandler.broadcast("카운트다운 : " + nowTime + "초", true);
 			return ActionResult.PASS;
 		});
 	}

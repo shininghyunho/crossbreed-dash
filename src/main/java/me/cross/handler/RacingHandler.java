@@ -15,7 +15,7 @@ public class RacingHandler {
 
     public static void readyForRunning() {
         // add players to RunningHandler
-        Cross.broadcast("경주가 곧 시작됩니다. 출발선에 서주세요.");
+        MessageHandler.broadcast("경주가 곧 시작됩니다. 출발선에 서주세요.");
         mode = RacingMode.READY_FOR_RUNNING;
 
         StopwatchHandler.forNotStarted.stop();
@@ -24,7 +24,7 @@ public class RacingHandler {
         addPlayers(Cross.server.getPlayerManager().getPlayerList());
     }
     public static void countdown() {
-        Cross.broadcast("카운트다운 시작!");
+        MessageHandler.broadcast("카운트다운 시작!");
         mode = RacingMode.COUNTDOWN;
 
         StopwatchHandler.forRunningReady.stop();
@@ -32,7 +32,7 @@ public class RacingHandler {
     }
 
     public static void run() {
-        Cross.broadcast("경주 시작! 달리세요!!");
+        MessageHandler.broadcast("경주 시작! 달리세요!!");
         mode = RacingMode.RUNNING;
 
         StopwatchHandler.forCountdown.stop();
@@ -43,7 +43,7 @@ public class RacingHandler {
     }
 
     public static void finished() {
-        Cross.broadcast("모두 도착했습니다. 경주가 종료되었습니다. 순위를 확인해보세요.");
+        MessageHandler.broadcast("모두 도착했습니다. 경주가 종료되었습니다. 순위를 확인해보세요.");
         mode = RacingMode.FINISHED;
 
         RacingTimer.stop();
@@ -51,13 +51,13 @@ public class RacingHandler {
     }
 
     public static void end() {
-        Cross.broadcast("경주가 종료되었습니다. 다음 경주를 준비하세요.");
+        MessageHandler.broadcast("경주가 종료되었습니다. 다음 경주를 준비하세요.");
         mode = RacingMode.NOT_STARTED;
 
         StopwatchHandler.forFinished.stop();
         StopwatchHandler.forNotStarted.start();
 
-        Cross.broadcast(RunningHandler.getTotalResult());
+        MessageHandler.broadcast(RunningHandler.getTotalResult());
 
         // 전체 참가자들에게 말 알을 인벤토리에 추가
         addHorseEggItemToAllPlayers();

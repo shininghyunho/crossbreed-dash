@@ -22,31 +22,31 @@ public class BreedHandler {
 
     private static boolean isImpossibleBreed(HorseAbility horseAbility1, HorseAbility horseAbility2, UUID playerUUID) {
         if(horseAbility1 == null) {
-            Cross.broadcast("1번째 말은 당신 소유가 아닙니다");
+            MessageHandler.broadcast("1번째 말은 당신 소유가 아닙니다");
             return true;
         }
         else if(horseAbility2 == null) {
-            Cross.broadcast("2번째 말은 당신 소유가 아닙니다");
+            MessageHandler.broadcast("2번째 말은 당신 소유가 아닙니다");
             return true;
         }
         else if(!horseAbility1.ownerUuid.equals(playerUUID)) {
-            Cross.broadcast(horseAbility1.name + " 은 당신의 말이 아닙니다.");
+            MessageHandler.broadcast(horseAbility1.name + " 은 당신의 말이 아닙니다.");
             return true;
         }
         else if(!horseAbility2.ownerUuid.equals(playerUUID)) {
-            Cross.broadcast(horseAbility2.name + " 은 당신의 말이 아닙니다.");
+            MessageHandler.broadcast(horseAbility2.name + " 은 당신의 말이 아닙니다.");
             return true;
         }
         else if(horseAbility1.horseUuid.equals(horseAbility2.horseUuid)) {
-            Cross.broadcast("같은 말입니다.");
+            MessageHandler.broadcast("같은 말입니다.");
             return true;
         }
         else if(horseAbility1.isBred) {
-            Cross.broadcast(horseAbility1.name + " 은 이미 번식한 말입니다.");
+            MessageHandler.broadcast(horseAbility1.name + " 은 이미 번식한 말입니다.");
             return true;
         }
         else if(horseAbility2.isBred) {
-            Cross.broadcast(horseAbility2.name + " 은 이미 번식한 말입니다.");
+            MessageHandler.broadcast(horseAbility2.name + " 은 이미 번식한 말입니다.");
             return true;
         }
         return false;
