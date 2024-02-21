@@ -38,11 +38,7 @@ public class Stopwatch {
                 if(mode == RacingMode.COUNTDOWN) RacingCountdownTickCallback.COUNTDOWN_TICK.invoker().interact(nowTime);
 
                 if(nowTime==0) {
-                    if(mode == RacingMode.NOT_STARTED) RacingCallback.READY_FOR_RUNNING.invoker().interact();
-                    else if(mode == RacingMode.READY_FOR_RUNNING) RacingCallback.COUNTDOWN.invoker().interact();
-                    else if(mode == RacingMode.COUNTDOWN) RacingCallback.RUNNING.invoker().interact();
-                    else if(mode == RacingMode.FINISHED) RacingCallback.END.invoker().interact();
-
+                    invokeCallbackBasedOnMode();
                     stop();
                 }
                 nowTime--;
@@ -52,6 +48,22 @@ public class Stopwatch {
         timer.schedule(task, 0, 1000);
     }
 
+    private void invokeCallbackBasedOnMode() {
+        switch (mode) {
+            case NOT_STARTED:
+                RacingCallback.READY_FOR_RUNNING.invoker().interact();
+                break;
+            case READY_FOR_RUNNING:
+                RacingCallback.COUNTDOWN.invoker().interact();
+                break;
+            case COUNTDOWN:
+                RacingCallback.RUNNING.invoker().interact();
+                break;
+            case FINISHED:
+                RacingCallback.END.invoker().interact();
+                break;
+        }
+    }
     public void pause() {
         if(task!=null) task.cancel();
     }
