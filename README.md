@@ -21,15 +21,33 @@
 # 게임 환경
 - java 17+
 - minecraft 1.20.1
-- fabric 1.20.1
+- fabric api 0.91.1+1.20.1
+- fabric loader 0.15.6
 
 # 게임 설치
+## 1인 테스트하는 방법 (클라이언트, 서버 실행)
 1. Java 17+ 설치 [링크](https://www.oracle.com/java/technologies/downloads/#java17)
 2. Git Clone 및 실행
 ```bash
 $ git clone https://github.com/shininghyunho/crossbreed-dash.git
+$ ./gradlew build
 $ ./gradlew runClient
 ```
+
+## docker로 실행하는 방법 (서버만 실행)
+1. Docker Desktop 설치 [링크](https://www.docker.com/products/docker-desktop)
+2. Git Clone 및 실행
+```bash
+$ git clone https://github.com/shininghyunho/crossbreed-dash.git
+```
+3. script 실행. (각 os에 맞게 실행)
+```bash
+// windows 일때
+$ ./run_for_window.bat
+// linux 일때
+$ ./run_for_linux.sh
+```
+4. 클라이언트 런처에서 포트 25565로 접속하여 게임을 즐깁니다.
 
 # 작업한 마인크래프트 모드 기능
 ## MIXIN
