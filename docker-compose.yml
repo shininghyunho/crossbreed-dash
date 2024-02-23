@@ -13,6 +13,8 @@ services:
       - "25565:25565"
     volumes:
       - fabric:/data
+      - ./build/libs/cross-0.1.0.jar:/data/mods/cross-0.1.0.jar
+      - ./api/fabric-api-0.91.1+1.20.1.jar:/data/mods/fabric-api-0.91.1+1.20.1.jar
 
 volumes:
   fabric: {}
