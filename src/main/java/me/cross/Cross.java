@@ -30,11 +30,8 @@ public class Cross implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		registerEvents();
-		CustomBlock.registerCustomBlock();
-		registerCustomCommands();
-		CheckPointBlockHandler.initCheckPointBlockPosMap();
 		LOGGER.info("Hello Fabric world!");
+		RegisterHandler.register();
 	}
 
 	public static void startMod() {
@@ -49,83 +46,6 @@ public class Cross implements ModInitializer {
 	}
 
 	//  Private Methods
-	private void registerEvents() {
-		registerHorseEvents();
-		registerServerEvents();
-		registerRacingEvents();
-	}
-	private void registerHorseEvents() {
-		// HorseBondWithPlayerCallback.EVENT.register
-		HorseBondWithPlayerCallback.EVENT.register((player, horse) -> {
-			LOGGER.info("말과 상호작용 이벤트 발생");
-			// 말 능력치가 없다면 생성
-			addAbilityIfNotPresent(player, horse);
-		});
-	}
-	private void registerServerEvents() {
-		// server start, stop
-		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			LOGGER.info("server start");
-		});
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-			LOGGER.info("server stop");
-		});
-		// for every tick
-		ServerTickEvents.END_SERVER_TICK.register(server -> {
-			if(Cross.server == null) Cross.server = server;
-		});
-	}
-	private void registerRacingEvents() {
-		// 달리기 준비.
-		RacingCallback.READY_FOR_RUNNING.register(() -> {
-			LOGGER.info("달리기 준비 이벤트");
-			RacingHandler.readyForRunning();
-			return ActionResult.PASS;
-		});
-
-		// 카운트다운
-		RacingCallback.COUNTDOWN.register(() -> {
-			LOGGER.info("카운트다운 이벤트");
-			RacingHandler.countdown();
-			return ActionResult.PASS;
-		});
-
-		// Running
-		RacingCallback.RUNNING.register(() -> {
-			LOGGER.info("달리기 이벤트");
-			RacingHandler.run();
-			return ActionResult.PASS;
-		});
-
-		// Finished
-		RacingCallback.FINISHED.register(() -> {
-			LOGGER.info("경주 종료 이벤트");
-			RacingHandler.finished();
-			return ActionResult.PASS;
-		});
-
-		// END
-		RacingCallback.END.register(() -> {
-			LOGGER.info("경주 완전 종료 이벤트, 다음 경기 준비");
-			RacingHandler.end();
-			return ActionResult.PASS;
-		});
-
-		// 카운트다운 틱
-		RacingCountdownTickCallback.COUNTDOWN_TICK.register((nowTime) -> {
-			MessageHandler.broadcast("카운트다운 : " + nowTime + "초", true);
-			return ActionResult.PASS;
-		});
-	}
-	private void registerCustomCommands() {
-		CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> {
-			ModCommand.register(dispatcher);
-		}));
-
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-			HorseBreedCommand.register(dispatcher);
-		});
-	}
 	private static void setModStart() {
 		StopwatchHandler.forNotStarted.start();
 		RacingHandler.init();
@@ -133,10 +53,5 @@ public class Cross implements ModInitializer {
 	private static void setModStop() {
 		StopwatchHandler.stopAll();
 		RacingHandler.init();
-	}
-	private void addAbilityIfNotPresent(PlayerEntity player, AbstractHorseEntity horse) {
-		// map 에서 houseAbility 가 있으면 가져오고 없으면 생성
-		HorseAbility horseAbility = HorseAbilityHandler.getOrAddHorseAbility(player.getUuid(), horse.getUuid());
-		Cross.LOGGER.info("말 능력치 : " + horseAbility);
 	}
 }
