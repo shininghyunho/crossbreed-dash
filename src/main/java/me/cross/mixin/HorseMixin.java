@@ -3,10 +3,7 @@ package me.cross.mixin;
 import me.cross.Cross;
 import me.cross.custom.event.horse.HorseBondWithPlayerCallback;
 import me.cross.entity.HorseAbility;
-import me.cross.handler.CheckPointBlockHandler;
-import me.cross.handler.HorseAbilityHandler;
-import me.cross.handler.RacingHandler;
-import me.cross.handler.RunningHandler;
+import me.cross.handler.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.AbstractHorseEntity;
@@ -45,7 +42,7 @@ public abstract class HorseMixin extends Entity {
         }
         else if(isHorseCrazy()) {
             setRandCrazyCount();
-            Cross.LOGGER.info("말이 미친 상태입니다 ㅋㅋ 말 이름 : " + horseAbility.name);
+            MessageHandler.sendToPlayer(controllingPlayer, "말이 변덕 때문에 움직일 수 없습니다. 잠시 기달주세요.");
         }
         // 속도를 horseAbility.speedMultiplier 배로 증가시킴
         else if(horseAbility!=null) {

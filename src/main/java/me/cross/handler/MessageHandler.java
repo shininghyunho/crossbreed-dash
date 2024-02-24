@@ -1,6 +1,7 @@
 package me.cross.handler;
 
 import me.cross.Cross;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.text.Style;
@@ -34,7 +35,12 @@ public class MessageHandler {
 
         playerManager.broadcast(styledText, overlay);
     }
-    
+
+    public static void sendToPlayer(PlayerEntity controllingPlayer, String string) {
+        if(isServerNotAlive()) return;
+        controllingPlayer.sendMessage(Text.of(string), true);
+    }
+
     private static boolean isServerNotAlive() {
         if(server == null) {
             MessageHandler.server = Cross.server;
