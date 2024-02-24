@@ -35,43 +35,49 @@ public class RunningHandler {
         finishedPlayerCount = 0;
         rank = 1;
     }
-    public static int getCheckpointIdx(UUID player) {
-        if(!playerCheckpointIdx.containsKey(player)) return -1;
-        return playerCheckpointIdx.get(player);
+    public static int getCheckpointIdx(UUID playerUUID) {
+        if(!playerCheckpointIdx.containsKey(playerUUID)) return -1;
+        return playerCheckpointIdx.get(playerUUID);
     }
-    public static void setPassed(UUID uuid, int idx) {
-        if(!playerCheckpointPassed.containsKey(uuid)) return;
+    // playerCheckpointPassed 에서 해당 idx 의 값 반환
+    public static boolean isPassed(UUID playerUUID, int idx) {
+        if(!playerCheckpointPassed.containsKey(playerUUID)) return false;
+        if(idx <0 || idx >= CHECKPOINT_COUNT) return false;
+        return playerCheckpointPassed.get(playerUUID)[idx];
+    }
+    public static void setPassed(UUID playerUUID, int idx) {
+        if(!playerCheckpointPassed.containsKey(playerUUID)) return;
         if(idx <0 || idx >= CHECKPOINT_COUNT) return;
-        playerCheckpointPassed.get(uuid)[idx] = true;
-        playerCheckpointIdx.put(uuid, idx+1);
+        playerCheckpointPassed.get(playerUUID)[idx] = true;
+        playerCheckpointIdx.put(playerUUID, idx);
         // send message
-        MessageHandler.sendToPlayerWithOverlay(uuid, "체크포인트 " + idx + "번을 지나셨습니다.");
+        MessageHandler.sendToPlayerWithOverlay(playerUUID, "체크포인트 " + idx + "번을 지나셨습니다.");
     }
     // 1 바퀴 돌았는지 확인
-    public static boolean isLapFinished(int x,int z,int idx,UUID uuid) {
-        if(!playerCheckpointIdx.containsKey(uuid)) return false;
+    public static boolean isLapFinished(int x,int z,int idx,UUID playerUUID) {
+        if(!playerCheckpointIdx.containsKey(playerUUID)) return false;
         // idx 가 9번이고 0번에 있다면 1바퀴 돌았다고 판단
-        return playerCheckpointIdx.get(uuid) == CHECKPOINT_COUNT-1 && CheckPointBlockHandler.isPlayerAtIdxPoint(x,z,0);
+        return playerCheckpointIdx.get(playerUUID) == CHECKPOINT_COUNT-1 && CheckPointBlockHandler.isPlayerAtIdxPoint(x,z,0);
     }
-    public static void setNextLap(UUID uuid) {
-        if(!playerLapCount.containsKey(uuid)) return;
+    public static void setNextLap(UUID playerUUID) {
+        if(!playerLapCount.containsKey(playerUUID)) return;
 
         // lap 을 증가하고 끝났는지 확인
-        addPlayerLapCount(uuid);
-        if(isPlayerFinished(uuid)) {
+        addPlayerLapCount(playerUUID);
+        if(isPlayerFinished(playerUUID)) {
             //  끝났다면 랭킹과 시간 저장
-            playerTime.put(uuid, RacingTimer.getTime());
-            playerRank.put(uuid, rank++);
+            playerTime.put(playerUUID, RacingTimer.getTime());
+            playerRank.put(playerUUID, rank++);
             finishedPlayerCount++;
 
             // 해당 유저에게 메시지 전송
-            MessageHandler.sendToPlayerWithOverlay(uuid, "경주를 완료하셨습니다. " + playerRank.get(uuid) + "등입니다.");
+            MessageHandler.sendToPlayerWithOverlay(playerUUID, "경주를 완료하셨습니다. " + playerRank.get(playerUUID) + "등입니다.");
 
             // 모든 플레이어가 끝났다면 경주 종료
             checkAllPlayerFinished();
         }
         // 체크포인트 초기화
-        clearCheckpoint(uuid);
+        clearCheckpoint(playerUUID);
     }
 
     public static String getRaceResult() {

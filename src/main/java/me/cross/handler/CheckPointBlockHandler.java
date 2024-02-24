@@ -46,8 +46,10 @@ public class CheckPointBlockHandler {
 
     public static boolean isPlayerAtIdxPoint(int x, int z, int idx) {
         if(idx < 0 || idx >= checkpointBlocks.size()) return false;
+        // idx 번째 체크포인트 블록 이름
         String blockName = checkpointBlocks.get(idx);
         if(!checkpointBlockPosMap.containsKey(blockName)) return false;
+        // idx 번째 체크포인트 블록 좌표들 중에 x, z 좌표가 있는지
         return checkpointBlockPosMap.get(blockName).stream().anyMatch(pos -> pos.getX() == x && pos.getZ() == z);
     }
 

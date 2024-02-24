@@ -6,13 +6,16 @@ import me.cross.entity.HorseAbility;
 import me.cross.handler.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,6 +25,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractHorseEntity.class)
 public abstract class HorseMixin extends Entity {
+    @Shadow @Nullable public abstract LivingEntity getControllingPassenger();
+
     private static final int MAX_CRAZY_COUNT = 60;
     private static final double DEFAULT_SPEED=0.2d;
     private static int crazyCount = 0;
@@ -109,17 +114,22 @@ public abstract class HorseMixin extends Entity {
     @Inject(at = @At("TAIL"), method = "tick")
     private void tick(CallbackInfo ci) {
         // 러닝 모드일때 체크포인트 지나갔는지 확인
-        if(RacingHandler.isRunning() && !getWorld().isClient && !isHaveOwner()) {
-            int x = (int) getX(), z = (int) getZ(), idx = RunningHandler.getCheckpointIdx(getUuid());
+        if(RacingHandler.isRunning() && !getWorld().isClient && isHaveOwner() && this.hasPassengers()) {
+            PlayerEntity player = (PlayerEntity) this.getControllingPassenger();
+            if(player == null) return;
+            int x = (int) getX(), z = (int) getZ(), idx = RunningHandler.getCheckpointIdx(player.getUuid());
             if(idx==-1) return;
 
-            // 다음 체크 포인트 인지
-            if(CheckPointBlockHandler.isPlayerAtIdxPoint(x,z,idx+1)) {
-                RunningHandler.setPassed(getUuid(),idx+1);
+            // idx : 현재까지 지난 체크포인트
+            // idx 가 0이 라면 1번째 체크포인트를 지날때 true
+            // 그리고 idx+1 아직 false 일때
+            if(CheckPointBlockHandler.isPlayerAtIdxPoint(x,z,idx+1) && RunningHandler.isPassed(player.getUuid(),idx) && !RunningHandler.isPassed(player.getUuid(),idx+1)) {
+                Cross.LOGGER.info("체크포인트 " + (idx+1) + "번 pass.");
+                RunningHandler.setPassed(player.getUuid(),idx+1);
             }
             // 1바퀴 돌았는지 확인
-            if(RunningHandler.isLapFinished(x,z,idx,getUuid())) {
-                RunningHandler.setNextLap(getUuid());
+            if(RunningHandler.isLapFinished(x,z,idx,player.getUuid())) {
+                RunningHandler.setNextLap(player.getUuid());
             }
         }
     }
