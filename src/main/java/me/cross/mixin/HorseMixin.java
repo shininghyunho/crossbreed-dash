@@ -42,7 +42,7 @@ public abstract class HorseMixin extends Entity {
         }
         else if(isHorseCrazy()) {
             setRandCrazyCount();
-            MessageHandler.sendToPlayer(controllingPlayer, "말이 변덕 때문에 움직일 수 없습니다. 잠시 기달주세요.");
+            MessageHandler.sendToPlayerWithOverlay(controllingPlayer, "말이 변덕 때문에 움직일 수 없습니다. 잠시 기달주세요.");
         }
         // 속도를 horseAbility.speedMultiplier 배로 증가시킴
         else if(horseAbility!=null) {
@@ -69,11 +69,19 @@ public abstract class HorseMixin extends Entity {
     }
 
     // putPlayerOnBack
-    @Inject(at = @At("TAIL"), method = "putPlayerOnBack")
+    @Inject(at = @At("HEAD"), method = "putPlayerOnBack", cancellable = true)
     private void putPlayerOnBack(PlayerEntity player, CallbackInfo ci) {
-        // add horse ability event
+        // 말의 주인과 player 가 같지 않다면 탈 수 없음
+        HorseAbility horseAbility = getHorseAbility();
+        if(horseAbility != null && !horseAbility.ownerUuid.equals(player.getUuid())) {
+            MessageHandler.sendToPlayerWithOverlay(player, "말의 주인만 탈 수 있습니다.");
+            ci.cancel();
+        }
+
+        // 말에게 능력 부여
         HorseBondWithPlayerCallback.EVENT.invoker().interact(player, (AbstractHorseEntity) (Object) this);
 
+        // 주인이 없는 말이면 주인을 설정
         if(!isHaveOwner()) {
             AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
             horse.bondWithPlayer(player);

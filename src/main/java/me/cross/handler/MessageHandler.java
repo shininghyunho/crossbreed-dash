@@ -38,6 +38,11 @@ public class MessageHandler {
 
     public static void sendToPlayer(PlayerEntity controllingPlayer, String string) {
         if(isServerNotAlive()) return;
+        controllingPlayer.sendMessage(Text.of(string), false);
+    }
+
+    public static void sendToPlayerWithOverlay(PlayerEntity controllingPlayer, String string) {
+        if(isServerNotAlive()) return;
         controllingPlayer.sendMessage(Text.of(string), true);
     }
 
