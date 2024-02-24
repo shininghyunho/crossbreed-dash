@@ -35,34 +35,23 @@ public class RunningHandler {
         finishedPlayerCount = 0;
         rank = 1;
     }
-    // 체크포인트를 순서대로 밟았는지 확인
-
-    public static boolean isPassedInorder(UUID player, int idx) {
-        if(!playerCheckpointPassed.containsKey(player)) return false;
-        else if(idx ==0) return true;
-
-        return playerCheckpointPassed.get(player)[idx-1];
-    }
     public static int getCheckpointIdx(UUID player) {
         if(!playerCheckpointIdx.containsKey(player)) return -1;
         return playerCheckpointIdx.get(player);
     }
-    public static void setNextCheckpointIdx(UUID uuid) {
-        if(!playerCheckpointIdx.containsKey(uuid)) return;
-        // 이미 통과했다면 리턴
-        int idx = playerCheckpointIdx.get(uuid);
-        if(idx <0 || idx >= CHECKPOINT_COUNT) return;
-        if(playerCheckpointPassed.get(uuid)[idx]) return;
-        playerCheckpointIdx.put(uuid, idx+1);
-    }
     public static void setPassed(UUID uuid, int idx) {
         if(!playerCheckpointPassed.containsKey(uuid)) return;
+        if(idx <0 || idx >= CHECKPOINT_COUNT) return;
         playerCheckpointPassed.get(uuid)[idx] = true;
+        playerCheckpointIdx.put(uuid, idx+1);
+        // send message
+        MessageHandler.sendToPlayerWithOverlay(uuid, "체크포인트 " + idx + "번을 지나셨습니다.");
     }
     // 1 바퀴 돌았는지 확인
-    public static boolean isLapFinished(UUID uuid) {
+    public static boolean isLapFinished(int x,int z,int idx,UUID uuid) {
         if(!playerCheckpointIdx.containsKey(uuid)) return false;
-        return playerCheckpointIdx.get(uuid) >= CHECKPOINT_COUNT;
+        // idx 가 9번이고 0번에 있다면 1바퀴 돌았다고 판단
+        return playerCheckpointIdx.get(uuid) == CHECKPOINT_COUNT-1 && CheckPointBlockHandler.isPlayerAtIdxPoint(x,z,0);
     }
     public static void setNextLap(UUID uuid) {
         if(!playerLapCount.containsKey(uuid)) return;
@@ -74,6 +63,9 @@ public class RunningHandler {
             playerTime.put(uuid, RacingTimer.getTime());
             playerRank.put(uuid, rank++);
             finishedPlayerCount++;
+
+            // 해당 유저에게 메시지 전송
+            MessageHandler.sendToPlayerWithOverlay(uuid, "경주를 완료하셨습니다. " + playerRank.get(uuid) + "등입니다.");
 
             // 모든 플레이어가 끝났다면 경주 종료
             checkAllPlayerFinished();
@@ -151,7 +143,11 @@ public class RunningHandler {
 
     private static void initCheckpoints(List<UUID> players) {
         playerCheckpointPassed.clear();
-        players.forEach(player -> playerCheckpointPassed.put(player, new boolean[CHECKPOINT_COUNT]));
+        players.forEach(player -> {
+            playerCheckpointPassed.put(player, new boolean[CHECKPOINT_COUNT]);
+            // 0번은 true 로 초기화
+            playerCheckpointPassed.get(player)[0] = true;
+        });
     }
     private static void initPlayerCheckpointIdx(List<UUID> players) {
         playerCheckpointIdx.clear();

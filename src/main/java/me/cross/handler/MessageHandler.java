@@ -8,6 +8,8 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.UUID;
+
 public class MessageHandler {
     private static MinecraftServer server;
 
@@ -44,6 +46,12 @@ public class MessageHandler {
     public static void sendToPlayerWithOverlay(PlayerEntity controllingPlayer, String string) {
         if(isServerNotAlive()) return;
         controllingPlayer.sendMessage(Text.of(string), true);
+    }
+    public static void sendToPlayerWithOverlay(UUID playerUUID, String string) {
+        if(isServerNotAlive()) return;
+        PlayerEntity player = server.getPlayerManager().getPlayer(playerUUID);
+        if(player == null) return;
+        player.sendMessage(Text.of(string), true);
     }
 
     private static boolean isServerNotAlive() {

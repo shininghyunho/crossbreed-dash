@@ -113,13 +113,12 @@ public abstract class HorseMixin extends Entity {
             int x = (int) getX(), z = (int) getZ(), idx = RunningHandler.getCheckpointIdx(getUuid());
             if(idx==-1) return;
 
-            // 체크포인트 지나갔는지 확인
-            if(CheckPointBlockHandler.isPlayerAtIdxPoint(x,z,idx) && RunningHandler.isPassedInorder(getUuid(),idx)) {
-                RunningHandler.setPassed(getUuid(),idx);
-                RunningHandler.setNextCheckpointIdx(getUuid());
+            // 다음 체크 포인트 인지
+            if(CheckPointBlockHandler.isPlayerAtIdxPoint(x,z,idx+1)) {
+                RunningHandler.setPassed(getUuid(),idx+1);
             }
             // 1바퀴 돌았는지 확인
-            if(RunningHandler.isLapFinished(getUuid())) {
+            if(RunningHandler.isLapFinished(x,z,idx,getUuid())) {
                 RunningHandler.setNextLap(getUuid());
             }
         }
