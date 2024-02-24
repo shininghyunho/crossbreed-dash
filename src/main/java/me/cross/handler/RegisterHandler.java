@@ -7,6 +7,7 @@ import me.cross.custom.command.ModCommand;
 import me.cross.custom.event.horse.HorseBondWithPlayerCallback;
 import me.cross.custom.event.race.RacingCallback;
 import me.cross.custom.event.race.RacingCountdownTickCallback;
+import me.cross.custom.event.race.RacingRemainTimeCallback;
 import me.cross.entity.HorseAbility;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -93,6 +94,12 @@ public class RegisterHandler {
             MessageHandler.broadcast("카운트다운 : " + nowTime + "초", true);
             return ActionResult.PASS;
         });
+
+        // 경시 시작 전 남은 시간
+        RacingRemainTimeCallback.REMAIN_TIME.register((nowTime) -> {
+            MessageHandler.broadcast("경주 시작까지 " + secToRealTime(nowTime) + " 남았습니다.", true);
+            return ActionResult.PASS;
+        });
     }
     private static void registerCustomCommands() {
         CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> {
@@ -108,5 +115,18 @@ public class RegisterHandler {
         HorseAbility horseAbility = HorseAbilityHandler.getOrAddHorseAbility(player.getUuid(), horse.getUuid());
         Cross.LOGGER.info("말 능력치 : " + horseAbility);
     }
-
+    // sec to real time
+    private static String secToRealTime(long sec) {
+        long hour = sec / 3600;
+        long min = (sec % 3600) / 60;
+        long second = sec % 60;
+        // if hour,min is 0, don't show
+        if(hour==0) {
+            if(min==0) {
+                return second + "초";
+            }
+            return min + "분 " + second + "초";
+        }
+        return hour + "시간 " + min + "분 " + second + "초";
+    }
 }

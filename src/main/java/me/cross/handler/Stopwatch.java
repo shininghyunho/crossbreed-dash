@@ -3,6 +3,7 @@ package me.cross.handler;
 import me.cross.Cross;
 import me.cross.custom.event.race.RacingCallback;
 import me.cross.custom.event.race.RacingCountdownTickCallback;
+import me.cross.custom.event.race.RacingRemainTimeCallback;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -36,7 +37,8 @@ public class Stopwatch {
                 Cross.LOGGER.info("Stopwatch mode : " + mode.name + ", nowTime : " + nowTime);
                 // countdown
                 if(mode == RacingMode.COUNTDOWN) RacingCountdownTickCallback.COUNTDOWN_TICK.invoker().interact(nowTime);
-
+                // NOT_STARTED 에서 30초 마다 broadcast
+                if(mode == RacingMode.READY_FOR_RUNNING && nowTime%30==0 && nowTime!=0) RacingRemainTimeCallback.REMAIN_TIME.invoker().interact(nowTime);
                 if(nowTime==0) {
                     invokeCallbackBasedOnMode();
                     stop();
