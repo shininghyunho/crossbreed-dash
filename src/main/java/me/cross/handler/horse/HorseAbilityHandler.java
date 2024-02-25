@@ -2,6 +2,7 @@ package me.cross.handler.horse;
 
 import me.cross.Cross;
 import me.cross.entity.HorseAbility;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,6 +32,9 @@ public class HorseAbilityHandler {
         Cross.LOGGER.info("HorseAbility 없으므로 새로 생성합니다.");
         HorseAbility newHorseAbility = new HorseAbility(playerUUID, horseUUID);
         addHorseAbility(playerUUID, horseUUID, newHorseAbility);
+        // 주인에게 책 주기
+        PlayerEntity player = Cross.server.getPlayerManager().getPlayer(playerUUID);
+        HorseBookHandler.giveHorseBook(player, newHorseAbility);
         return newHorseAbility;
     }
 

@@ -1,8 +1,10 @@
 package me.cross.handler.horse;
 
+import me.cross.Cross;
 import me.cross.entity.HorseAbility;
 import me.cross.handler.MessageHandler;
 import net.minecraft.entity.passive.AbstractHorseEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Objects;
@@ -56,6 +58,10 @@ public class BreedHandler {
         // 1,2 를 랜덤하게 섞어서 새로운 HorseAbility 생성
         AbstractHorseEntity horseEntity = HorseSummonHandler.summonHorse(pos);
         HorseAbility newHorseAbility = new HorseAbility(playerUUID, Objects.requireNonNull(horseEntity).getUuid());
+
+        // 주인에게 책 주기
+        PlayerEntity player = Cross.server.getPlayerManager().getPlayer(playerUUID);
+        HorseBookHandler.giveHorseBook(player, newHorseAbility);
 
         // 번식 여부를 true 로 변경
         horseAbility1.isBred = true;
