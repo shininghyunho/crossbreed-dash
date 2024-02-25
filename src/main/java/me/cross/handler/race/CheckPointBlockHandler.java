@@ -1,4 +1,4 @@
-package me.cross.handler;
+package me.cross.handler.race;
 
 import me.cross.Cross;
 import me.cross.custom.CustomBlock;

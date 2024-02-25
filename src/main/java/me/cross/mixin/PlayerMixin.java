@@ -1,10 +1,10 @@
 package me.cross.mixin;
 
 import me.cross.Cross;
-import me.cross.handler.CheckPointBlockHandler;
-import me.cross.handler.HorseAbilityHandler;
-import me.cross.handler.HorseNameHandler;
-import me.cross.handler.RacingHandler;
+import me.cross.handler.race.CheckPointBlockHandler;
+import me.cross.handler.horse.HorseAbilityHandler;
+import me.cross.handler.horse.HorseNameHandler;
+import me.cross.handler.race.RacingHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import org.spongepowered.asm.mixin.Mixin;

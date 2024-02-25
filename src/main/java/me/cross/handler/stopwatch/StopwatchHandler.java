@@ -1,4 +1,6 @@
-package me.cross.handler;
+package me.cross.handler.stopwatch;
+
+import me.cross.handler.race.RacingMode;
 
 public class StopwatchHandler {
     private static final long RACING_INTERVAL_SEC = 5, RUNNING_READY_SEC = 3, COUNTDOWN_SEC = 5, FINISHED_SEC = 10;

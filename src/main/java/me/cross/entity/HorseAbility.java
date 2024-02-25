@@ -1,6 +1,6 @@
 package me.cross.entity;
 
-import me.cross.handler.HorseNameHandler;
+import me.cross.handler.horse.HorseNameHandler;
 import net.minecraft.nbt.NbtCompound;
 
 import java.util.Random;

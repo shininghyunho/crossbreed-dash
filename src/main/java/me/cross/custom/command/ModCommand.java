@@ -4,7 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import me.cross.Cross;
 import me.cross.handler.MessageHandler;
-import me.cross.handler.RunningHandler;
+import me.cross.handler.race.RunningHandler;
 import net.minecraft.server.command.ServerCommandSource;
 
 import static net.minecraft.server.command.CommandManager.literal;

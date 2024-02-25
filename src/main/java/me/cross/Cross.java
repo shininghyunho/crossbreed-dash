@@ -1,25 +1,10 @@
 package me.cross;
 
-import me.cross.custom.CustomBlock;
-import me.cross.custom.command.HorseBreedCommand;
-import me.cross.custom.command.ModCommand;
-import me.cross.custom.event.horse.HorseBondWithPlayerCallback;
-import me.cross.custom.event.race.RacingCallback;
-import me.cross.custom.event.race.RacingCountdownTickCallback;
-import me.cross.entity.HorseAbility;
 import me.cross.handler.*;
+import me.cross.handler.race.RacingHandler;
+import me.cross.handler.stopwatch.StopwatchHandler;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.entity.passive.AbstractHorseEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.PlayerManager;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,4 +1,4 @@
-package me.cross.handler;
+package me.cross.handler.horse;
 
 import me.cross.Cross;
 import net.minecraft.entity.EntityType;

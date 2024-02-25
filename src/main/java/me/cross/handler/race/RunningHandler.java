@@ -1,7 +1,8 @@
-package me.cross.handler;
+package me.cross.handler.race;
 
 import me.cross.Cross;
 import me.cross.custom.event.race.RacingCallback;
+import me.cross.handler.MessageHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 

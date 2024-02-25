@@ -1,7 +1,7 @@
 package me.cross.mixin;
 
 import me.cross.Cross;
-import me.cross.handler.CheckPointBlockHandler;
+import me.cross.handler.race.CheckPointBlockHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;

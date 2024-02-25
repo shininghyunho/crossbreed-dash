@@ -1,7 +1,7 @@
-package me.cross.handler;
+package me.cross.handler.horse;
 
-import me.cross.Cross;
 import me.cross.entity.HorseAbility;
+import me.cross.handler.MessageHandler;
 import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.util.math.BlockPos;
 

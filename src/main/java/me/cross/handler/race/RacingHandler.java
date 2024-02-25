@@ -1,6 +1,8 @@
-package me.cross.handler;
+package me.cross.handler.race;
 
 import me.cross.Cross;
+import me.cross.handler.MessageHandler;
+import me.cross.handler.stopwatch.StopwatchHandler;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;

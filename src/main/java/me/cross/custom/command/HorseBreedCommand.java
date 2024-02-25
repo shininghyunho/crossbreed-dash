@@ -3,7 +3,7 @@ package me.cross.custom.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import me.cross.handler.HorseSummonHandler;
+import me.cross.handler.horse.HorseSummonHandler;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 

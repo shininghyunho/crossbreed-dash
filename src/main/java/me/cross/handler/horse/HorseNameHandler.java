@@ -1,4 +1,4 @@
-package me.cross.handler;
+package me.cross.handler.horse;
 
 import net.minecraft.nbt.NbtCompound;
 

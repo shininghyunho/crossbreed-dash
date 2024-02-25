@@ -1,4 +1,4 @@
-package me.cross.handler;
+package me.cross.handler.race;
 
 import java.util.HashMap;
 import java.util.Map;

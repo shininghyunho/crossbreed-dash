@@ -1,4 +1,4 @@
-package me.cross.handler;
+package me.cross.handler.race;
 
 public enum RacingMode {
     NOT_STARTED("NOT_STARTED"),
@@ -7,7 +7,7 @@ public enum RacingMode {
     RUNNING("RUNNING"),
     FINISHED("FINISHED");
 
-    final String name;
+    public final String name;
 
     RacingMode(String name) {
         this.name = name;

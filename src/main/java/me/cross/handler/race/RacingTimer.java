@@ -1,7 +1,6 @@
-package me.cross.handler;
+package me.cross.handler.race;
 
 import me.cross.Cross;
-import me.cross.custom.event.race.RacingCallback;
 
 import java.util.Timer;
 import java.util.TimerTask;
