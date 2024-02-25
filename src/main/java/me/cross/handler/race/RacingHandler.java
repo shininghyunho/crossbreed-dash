@@ -72,9 +72,6 @@ public class RacingHandler {
         playersUUID.clear();
         players.forEach(player -> playersUUID.add(player.getUuid()));
     }
-    public static Set<UUID> getPlayersUUID() {
-        return playersUUID;
-    }
     public static boolean isReadyForRunning() {
         return mode == RacingMode.READY_FOR_RUNNING;
     }

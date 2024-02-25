@@ -52,12 +52,9 @@ public class HorseAbility {
     }
 
     private void setStatRandomly() {
-        // 0.7 < speedMultiplier < 1.2
-        speedMultiplier = getRandomFloatInRange(0.7f, 1.2f);
-        // 0.5 < jumpMultiplier < 1.5
-        jumpMultiplier = getRandomFloatInRange(0.5f, 1.5f);
-        // 미칠 확률 : 달리다 갑자기 멈출 확률, 0<crazyFactor<0.005
-        crazyFactor = getRandomFloatInRange(0.0f, 0.005f);
+        speedMultiplier = getRandomFloatInRange(1.2f, 2.0f);
+        jumpMultiplier = getRandomFloatInRange(1.5f, 2.0f);
+        crazyFactor = getRandomFloatInRange(0.0f, 0.002f);
     }
 
     private String setName(String nbtName) {

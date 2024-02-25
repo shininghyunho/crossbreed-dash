@@ -12,7 +12,9 @@ public class RacingTimer {
     private static long nowTime = 0;
 
     public static void start() {
-        if(task!=null) return;
+        // 이미 시작되어있다면 return
+        stop();
+
         task = new TimerTask() {
             @Override
             public void run() {
@@ -24,6 +26,8 @@ public class RacingTimer {
                 }
             }
         };
+
+        Cross.LOGGER.info("레이싱 타이머를 시작했습니다.");
         timer.schedule(task, 0, 1000);
     }
 
