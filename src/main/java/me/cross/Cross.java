@@ -2,6 +2,7 @@ package me.cross;
 
 import me.cross.handler.*;
 import me.cross.handler.race.RacingHandler;
+import me.cross.handler.race.ScoreboardHandler;
 import me.cross.handler.stopwatch.StopwatchHandler;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.server.MinecraftServer;
@@ -34,9 +35,15 @@ public class Cross implements ModInitializer {
 	private static void setModStart() {
 		StopwatchHandler.forNotStarted.start();
 		RacingHandler.init();
+
+		// scoreboard 설정
+		ScoreboardHandler.init();
 	}
 	private static void setModStop() {
 		StopwatchHandler.stopAll();
 		RacingHandler.init();
+
+		// scoreboard 제거
+		ScoreboardHandler.remove();
 	}
 }

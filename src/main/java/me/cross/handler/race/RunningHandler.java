@@ -106,7 +106,7 @@ public class RunningHandler {
         RacingCallback.FINISHED.invoker().interact();
         addTotalScore();
         MessageHandler.broadcast(getRaceResult());
-        // total 점수 반영
+
     }
     // 1등부터 순서대로 유저 반환
     public static List<UUID> getRankingList() {

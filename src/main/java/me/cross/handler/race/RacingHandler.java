@@ -61,6 +61,9 @@ public class RacingHandler {
 
         MessageHandler.broadcast(RunningHandler.getTotalResult());
 
+        // 전체 점수 scoreboard 에 반영
+        ScoreboardHandler.updateScoreboard();
+
         // 전체 참가자들에게 말 알을 인벤토리에 추가
         addHorseEggItemToAllPlayers();
     }
@@ -68,6 +71,9 @@ public class RacingHandler {
     public static void addPlayers(List<ServerPlayerEntity> players) {
         playersUUID.clear();
         players.forEach(player -> playersUUID.add(player.getUuid()));
+    }
+    public static Set<UUID> getPlayersUUID() {
+        return playersUUID;
     }
     public static boolean isReadyForRunning() {
         return mode == RacingMode.READY_FOR_RUNNING;
