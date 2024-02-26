@@ -15,7 +15,7 @@ public class RunningHandler {
     // 체크포인트는 총 10개
     private static final int CHECKPOINT_COUNT = 10, LAP_COUNT = 1;
     private static int finishedPlayerCount = 0, rank = 1;
-    public static final int[] score = {10, 5, 3, 2, 1};
+    public static final int[] score = {10, 5, 3, 2, 1, 0};
     private static final Map<UUID,boolean[]> playerCheckpointPassed = new HashMap<>();
     // 유저마다 체크포인트 idx
     private static final Map<UUID,Integer> playerCheckpointIdx = new HashMap<>();
@@ -170,6 +170,6 @@ public class RunningHandler {
     }
     private static void initPlayerRank(List<UUID> players) {
         playerRank.clear();
-        for(int i=0; i<players.size(); i++) playerRank.put(players.get(i), i+1);
+        for (UUID player : players) playerRank.put(player, score.length - 1);
     }
 }
