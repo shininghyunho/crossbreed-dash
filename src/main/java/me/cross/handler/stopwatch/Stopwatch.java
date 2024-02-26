@@ -39,7 +39,7 @@ public class Stopwatch {
                 // countdown
                 if(mode == RacingMode.COUNTDOWN) RacingCountdownTickCallback.COUNTDOWN_TICK.invoker().interact(nowTime);
                 // NOT_STARTED 에서 30초 마다 broadcast
-                if(mode == RacingMode.NOT_STARTED && nowTime%30==0 && nowTime!=0) RacingRemainTimeCallback.REMAIN_TIME.invoker().interact(nowTime);
+                if(mode == RacingMode.NOT_STARTED && nowTime%10==0 && nowTime!=0) RacingRemainTimeCallback.REMAIN_TIME.invoker().interact(nowTime);
                 if(nowTime==0) {
                     invokeCallbackBasedOnMode();
                     stop();
