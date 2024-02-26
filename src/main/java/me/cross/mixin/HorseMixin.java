@@ -81,6 +81,7 @@ public abstract class HorseMixin extends Entity {
     // putPlayerOnBack
     @Inject(at = @At("HEAD"), method = "putPlayerOnBack", cancellable = true)
     private void putPlayerOnBack(PlayerEntity player, CallbackInfo ci) {
+        if(getWorld().isClient) return;
         // 말의 주인과 player 가 같지 않다면 탈 수 없음
         HorseAbility horseAbility = getHorseAbility();
         if(horseAbility != null && !horseAbility.ownerUuid.equals(player.getUuid())) {
