@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class ScoreboardHandler {
     public static void init() {
-        command("/scoreboard objectives add TOTAL_SCORE dummy \"내 점수\"");
+        command("/scoreboard objectives add TOTAL_SCORE dummy \"점수판\"");
         command("/scoreboard players set @a TOTAL_SCORE 0");
         command("/scoreboard objectives setdisplay sidebar TOTAL_SCORE");
     }
