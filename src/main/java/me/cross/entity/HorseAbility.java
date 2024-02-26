@@ -52,7 +52,7 @@ public class HorseAbility {
     }
 
     private void setStatRandomly() {
-        speedMultiplier = getRandomFloatInRange(1.2f, 2.0f);
+        speedMultiplier = getRandomFloatInRange(2.0f, 3.0f);
         jumpMultiplier = getRandomFloatInRange(1.5f, 2.0f);
         crazyFactor = getRandomFloatInRange(0.0f, 0.002f);
     }

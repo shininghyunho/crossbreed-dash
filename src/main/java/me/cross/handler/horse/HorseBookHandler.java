@@ -29,7 +29,7 @@ public class HorseBookHandler {
         // 말 점프력
         String jump = String.format("%.2f", horseAbility.jumpMultiplier);
         // 말 변덕
-        String crazy = String.format("%.5f", horseAbility.crazyFactor);
+        String crazy = String.format("%.5f", horseAbility.crazyFactor * 1000);
         // 말 책을 주는 명령어를 생성하는 코드
         return "give "+playerName+" written_book{pages:['[[\"\",{\"text\":\""+horseName+"\",\"color\":\"dark_aqua\",\"bold\":true}" +
                 ",\"의 능력\\\\n\\\\n속도 : \",{\"text\":\""+speed+"\",\"color\":\"dark_green\"}" +
