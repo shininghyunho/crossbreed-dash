@@ -53,7 +53,7 @@ public class RacingHandler {
     }
 
     public static void end() {
-        MessageHandler.broadcast("경주가 종료되었습니다. 다음 경주를 준비하세요.");
+        MessageHandler.broadcast("경주가 종료되었습니다. 인벤토리에서 말 알을 확인하세요!");
         mode = RacingMode.NOT_STARTED;
 
         StopwatchHandler.forFinished.stop();
