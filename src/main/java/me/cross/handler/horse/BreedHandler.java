@@ -58,6 +58,7 @@ public class BreedHandler {
         // 1,2 를 랜덤하게 섞어서 새로운 HorseAbility 생성
         AbstractHorseEntity horseEntity = HorseSummonHandler.summonHorse(pos);
         HorseAbility newHorseAbility = new HorseAbility(playerUUID, Objects.requireNonNull(horseEntity).getUuid());
+        HorseAbilityHandler.addHorseAbility(playerUUID, horseEntity.getUuid(), newHorseAbility);
 
         // 주인에게 책 주기
         PlayerEntity player = Cross.server.getPlayerManager().getPlayer(playerUUID);

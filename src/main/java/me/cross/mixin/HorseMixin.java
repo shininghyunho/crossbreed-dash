@@ -30,8 +30,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(AbstractHorseEntity.class)
 public abstract class HorseMixin extends Entity {
     @Shadow @Nullable public abstract LivingEntity getControllingPassenger();
-    @Unique
-    private final AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
 
     private static final int MAX_CRAZY_COUNT = 60;
     private static final double DEFAULT_SPEED=0.2d;
@@ -56,9 +54,8 @@ public abstract class HorseMixin extends Entity {
             MessageHandler.sendToPlayerWithOverlay(controllingPlayer, "말이 변덕 때문에 움직일 수 없습니다. 잠시 기달주세요.");
         }
         // 속도를 horseAbility.speedMultiplier 배로 증가시킴
-        else if(horseAbility!=null) {
-            cir.setReturnValue((float) ((float) DEFAULT_SPEED * horseAbility.speedMultiplier));
-        }
+        else if(horseAbility!=null) cir.setReturnValue((float) ((float) DEFAULT_SPEED * horseAbility.speedMultiplier));
+        else cir.setReturnValue((float) DEFAULT_SPEED);
     }
 
     // jump
@@ -81,7 +78,6 @@ public abstract class HorseMixin extends Entity {
     // putPlayerOnBack
     @Inject(at = @At("HEAD"), method = "putPlayerOnBack", cancellable = true)
     private void putPlayerOnBack(PlayerEntity player, CallbackInfo ci) {
-        if(getWorld().isClient) return;
         // 말의 주인과 player 가 같지 않다면 탈 수 없음
         HorseAbility horseAbility = getHorseAbility();
         if(horseAbility != null && !horseAbility.ownerUuid.equals(player.getUuid())) {
@@ -89,10 +85,12 @@ public abstract class HorseMixin extends Entity {
             ci.cancel();
         }
 
+        AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
         // 말에게 능력 부여, horseAbility 가 없다면 생성
         HorseBondWithPlayerCallback.EVENT.invoker().interact(player, horse);
         // 주인이 없는 말이면(말 entity 에 ownerUuid 가 없다면) 주인을 설정
         if(!isHaveOwner()) {
+            Cross.LOGGER.info("말에 주인이 없어, 말에게 주인을 설정합니다.");
             horse.bondWithPlayer(player);
             setHorseNameTag();
             setImmortal();
@@ -146,12 +144,14 @@ public abstract class HorseMixin extends Entity {
     
     @Unique
     private HorseAbility getHorseAbility() {
+        AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
         if(horse.getOwnerUuid() == null) return null;
         return HorseAbilityHandler.getOrAddHorseAbility(horse.getOwnerUuid(), getUuid());
     }
 
     @Unique
     private void setHorseNameTag() {
+        AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
         if(horse.getOwnerUuid() == null) return;
 
         // get horse name
@@ -171,11 +171,13 @@ public abstract class HorseMixin extends Entity {
 
     @Unique
     private boolean isHaveOwner() {
+        AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
         return horse.getOwnerUuid() != null;
     }
 
     @Unique
     private void setImmortal () {
+        AbstractHorseEntity horse = (AbstractHorseEntity) (Object) this;
         horse.setInvulnerable(true);
     }
 

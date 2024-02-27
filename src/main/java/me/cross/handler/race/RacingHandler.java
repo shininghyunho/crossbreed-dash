@@ -85,6 +85,8 @@ public class RacingHandler {
         mode = RacingMode.NOT_STARTED;
     }
     private static void addHorseEggItemToAllPlayers() {
+        // 클라이언트면 실행하지 않음
+        if(Cross.server==null || Cross.server.isDedicated()) return;
         // 모든 플레이어에게 말 알을 인벤토리에 추가
         Cross.server.getPlayerManager().getPlayerList().forEach(player -> {
             Item item = Items.HORSE_SPAWN_EGG;
