@@ -15,6 +15,9 @@ public class HorseBookHandler {
         MinecraftServer server = Cross.server;
         if(server == null) return;
 
+        // 클라이언트면 실행 안함
+        if(server.isDedicated()) return;
+
         CommandManager commandManager = server.getCommandManager();
         commandManager.executeWithPrefix(server.getCommandSource(), getHorseBookCommand(player, horseAbility));
     }

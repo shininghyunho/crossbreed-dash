@@ -175,7 +175,7 @@ public abstract class HorseMixin extends Entity {
     }
 
     @Unique
-    private void setImmortal() {
+    private void setImmortal () {
         horse.setInvulnerable(true);
     }
 
